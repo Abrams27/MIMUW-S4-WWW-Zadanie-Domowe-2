@@ -1,0 +1,115 @@
+import { QuizDetailedScoreboardGuard } from "../typeguards/typeguards.js";
+export class QuizDetailedScoreboard {
+    constructor(questionsStatistics) {
+        this.questionsStatistics = questionsStatistics;
+        this.quizScore = new QuizScore(this.calculateResultWithPenalties());
+    }
+    static fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers) {
+        return new QuizDetailedScoreboard(this.mapQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers));
+    }
+    static fromJson(quizDetailedScoreboardJson) {
+        const parsedQuizDetailedScoreboardJson = JSON.parse(quizDetailedScoreboardJson);
+        if (QuizDetailedScoreboardGuard.check(parsedQuizDetailedScoreboardJson)) {
+            const questionsStatistics = this.copyOfQuestionStatisticsArray(parsedQuizDetailedScoreboardJson.questionsStatistics);
+            return new QuizDetailedScoreboard(questionsStatistics);
+        }
+        else {
+            throw new Error("invalid scoreboard json format");
+        }
+    }
+    static copyOfQuestionStatisticsArray(questionsStatistics) {
+        return questionsStatistics
+            .map(questionStatistics => QuestionStatistics.copyOf(questionStatistics));
+    }
+    toJson() {
+        return JSON.stringify(this);
+    }
+    getNumericQuizScore() {
+        return this.quizScore.getScore();
+    }
+    getQuizScore() {
+        return this.quizScore;
+    }
+    getQuestionsStatistics() {
+        return this.questionsStatistics;
+    }
+    getNumberOfCorrectsAnswers() {
+        return this.questionsStatistics
+            .map(questionStatistics => questionStatistics.isAnswerCorrect())
+            .map(isAnswerCorrect => Number(isAnswerCorrect))
+            .reduce((sum, isCorrect) => sum + isCorrect);
+    }
+    getNumberOfAnswers() {
+        return this.questionsStatistics.length;
+    }
+    static mapQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers) {
+        return QuizQuestionWithAnswersAndTimeMapper
+            .mapToQuestionStatisticsArray(questionsListWithUserAnswers);
+    }
+    calculateResultWithPenalties() {
+        return this.questionsStatistics
+            .map(questionStatistics => questionStatistics.getTimeWithPenalty())
+            .reduce((sum, score) => sum + score);
+    }
+}
+export class QuizScore {
+    constructor(score) {
+        this.score = score;
+    }
+    getScore() {
+        return this.score;
+    }
+    static copyOf(quizScore) {
+        return new QuizScore(quizScore.score);
+    }
+    compare(quizScore) {
+        if (this.score < quizScore.score) {
+            return -1;
+        }
+        else if (this.score > quizScore.score) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+}
+export class QuestionStatistics {
+    constructor(isAnswerCorrect, timePenalty, timeSpendInSeconds) {
+        this.isAnswerCorrectFlag = isAnswerCorrect;
+        this.timePenalty = timePenalty;
+        this.timeSpendInSeconds = timeSpendInSeconds;
+    }
+    static copyOf(questionStatistics) {
+        return new QuestionStatistics(questionStatistics.isAnswerCorrectFlag, questionStatistics.timePenalty, questionStatistics.timeSpendInSeconds);
+    }
+    isAnswerCorrect() {
+        return this.isAnswerCorrectFlag;
+    }
+    getAnswerTime() {
+        return this.timeSpendInSeconds;
+    }
+    getTimePenalty() {
+        return this.timePenalty;
+    }
+    getTimeWithPenalty() {
+        if (this.isAnswerCorrectFlag) {
+            return this.timeSpendInSeconds;
+        }
+        else {
+            return this.timeSpendInSeconds + this.timePenalty;
+        }
+    }
+}
+class QuizQuestionWithAnswersAndTimeMapper {
+    static mapToQuestionStatisticsArray(quizQuestionWithAnswersAndTimeArray) {
+        return quizQuestionWithAnswersAndTimeArray
+            .map(quizQuestionWithAnswersAndTime => this.mapToQuestionStatistics(quizQuestionWithAnswersAndTime));
+    }
+    static mapToQuestionStatistics(quizQuestionWithAnswersAndTime) {
+        const isAnswerCorrect = quizQuestionWithAnswersAndTime.isUserAnswerCorrect();
+        const wrongAnswerPenalty = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
+        const answerTimeInSeconds = quizQuestionWithAnswersAndTime.getUserAnswerTime();
+        return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds);
+    }
+}
