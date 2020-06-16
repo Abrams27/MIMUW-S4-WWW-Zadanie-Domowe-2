@@ -48,7 +48,7 @@ body {
   }
 }
 
-.login-header-section {
+.password-change-header-section {
   grid-area: quiz-question-header-section;
 
   background-color: #54aabd;
@@ -57,7 +57,7 @@ body {
   color: #ffffff;
 }
 
-.login-header-text {
+.password-change-header-text {
   font-weight: bolder;
   font-size: 200%;
   text-align: left;
