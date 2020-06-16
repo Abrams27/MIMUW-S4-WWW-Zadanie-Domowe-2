@@ -5,7 +5,7 @@ body {
   margin: 0;
 }
 
-.password-change-container {
+.login-container {
   display: inline-grid;
   grid-column-gap: 16px;
   grid-row-gap: 10%;
@@ -20,7 +20,7 @@ body {
 }
 
 
-.password-change-header-section {
+.login-header-section {
   grid-area: login-header-section;
 
   background-color: #54aabd;
@@ -30,24 +30,24 @@ body {
   color: #ffffff;
 }
 
-.password-change-header-text {
+.login-header-text {
   font-weight: bolder;
   font-size: 200%;
   text-align: left;
 }
 
 
-.password-change-introduction-section {
+.login-introduction-section {
   grid-area: login-introduction-section;
 }
 
 
-.password-change-form-section {
+.login-form-section {
   grid-area: login-form-section;
 }
 
 
-.password-change-form {
+.login-form {
   display: inline-grid;
   grid-column-gap: 16px;
   grid-row-gap: 30%;
@@ -63,25 +63,25 @@ body {
 }
 
 
-.login-username-label {
+.login-label {
   grid-area: login-username-label;
 }
 
-.login-username-input {
+.login-input {
   grid-area: login-username-input;
 }
 
 
-.password-change-password-label {
+.login-password-label {
   grid-area: login-password-label;
 }
 
-.password-change-password-input {
+.login-password-input {
   grid-area: login-password-input;
 }
 
 
-.password-change-submit-input {
+.login-submit-input {
   grid-area: login-submit-input;
 
   background-color: #54aabd;
@@ -97,7 +97,7 @@ body {
 
 @media screen and (max-width: 1100px) {
 
-  .password-change-form {
+  .login-form {
     display: inline-grid;
     grid-row-gap: 5%;
     width: 100%;
