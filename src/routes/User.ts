@@ -66,4 +66,14 @@ function loginCorrectUser(req: Request, user: User): boolean {
 }
 
 
+router.get('/logout', async (req: Request, res: Response) => {
+  if (req.session !== undefined) {
+    req.session.destroy(() => {
+      res.redirect('/static/login.html')
+    })
+  }
+});
+
+
+
 export default router;
