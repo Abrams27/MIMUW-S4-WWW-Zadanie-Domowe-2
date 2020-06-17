@@ -14,14 +14,14 @@ export function asyncDbGet(query: string, params?: any[]): Promise<any> {
   })
 }
 
-// export const asyncDbRun = async (db: sqlite3.Database, sql: string, params?: any[]): Promise<void> => {
-//   return new Promise((resolve, reject) => {
-//     db.run(sql, params, (err) => {
-//       if (err) {
-//         reject(new Error("Database error."));
-//         return;
-//       }
-//       resolve();
-//     });
-//   });
-// };
+export const asyncDbRun = async (query: string, params?: any[]): Promise<void> => {
+  return new Promise((resolve, reject) => {
+    db.run(query, params, (err) => {
+      if (err) {
+        reject(new Error('Database error.'));
+      } else {
+        resolve();
+      }
+    });
+  });
+};
