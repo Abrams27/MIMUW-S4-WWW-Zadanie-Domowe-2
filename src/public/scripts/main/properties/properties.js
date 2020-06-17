@@ -1,7 +1,7 @@
 let Properties = /** @class */ (() => {
     class Properties {
     }
-    Properties.QUIZ_HTML_FILE = "quiz.html";
+    Properties.QUIZ_HTML_FILE = '/static/quiz.html';
     Properties.QUIZ_QUESTION_HTML_FILE = "quizQuestion.html";
     Properties.QUIZ_ENDING_HTML_FILE = "quizEnding.html";
     Properties.QUIZ_SESSION_STORAGE_KEY = "quiz";

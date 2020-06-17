@@ -7,13 +7,15 @@ import express, { Request, Response, NextFunction } from 'express';
 import { BAD_REQUEST } from 'http-status-codes';
 import 'express-async-errors';
 
+import session from 'express-session'
+const SQLiteStore = require('connect-sqlite3')(session);
+
+
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
 
-
 // Init express
 const app = express();
-
 
 
 /************************************************************************************
@@ -21,8 +23,13 @@ const app = express();
  ***********************************************************************************/
 
 app.use(express.json());
-app.use(express.urlencoded({extended: true}));
+app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(session({
+    store: new SQLiteStore(),
+    secret: 'pozdrawiamPanaCiebiere4242',
+    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
+}));
 
 // Show routes called in console during development
 if (process.env.NODE_ENV === 'development') {
@@ -55,9 +62,10 @@ const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
 const staticDir = path.join(__dirname, 'public');
 app.use(express.static(staticDir));
-app.get('*', (req: Request, res: Response) => {
-    res.sendFile('quiz.html', {root: viewsDir});
-});
+app.use('/static', express.static(path.join(__dirname, 'public')));
+// app.get('*', (req: Request, res: Response) => {
+//     res.sendFile('quiz.html', {root: viewsDir});
+// });
 
 // Export express instance
 export default app;

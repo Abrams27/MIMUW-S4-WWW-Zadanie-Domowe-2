@@ -1,6 +1,6 @@
 export class Properties {
 
-  public static QUIZ_HTML_FILE: string = "quiz.html";
+  public static QUIZ_HTML_FILE: string = '/static/quiz.html';
   public static QUIZ_QUESTION_HTML_FILE: string = "quizQuestion.html";
   public static QUIZ_ENDING_HTML_FILE: string = "quizEnding.html";
 
