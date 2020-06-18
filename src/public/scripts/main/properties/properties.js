@@ -15,6 +15,8 @@ let Properties = /** @class */ (() => {
     Properties.INDEXED_DB_VERSION = 1;
     Properties.INDEXED_BD_OBJECT_STORE_SIMPLE_SCOREBOARD = "quizquizquiz-object-store-best-scoreboard";
     Properties.INDEXED_BD_OBJECT_STORE_DETAILED_SCOREBOARD = "quizquizquiz-object-store-detailed-scoreboard";
+    Properties.CRSF_COOKIE_NAME = 'CSRF-TOKEN';
+    Properties.CRSF_INPUT_ID = 'crsf';
     return Properties;
 })();
 export { Properties };

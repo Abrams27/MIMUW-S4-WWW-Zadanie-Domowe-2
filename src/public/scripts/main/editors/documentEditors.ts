@@ -149,6 +149,20 @@ export class DocumentEditor {
   public getDocument(): Document {
     return this.document;
   }
+
+  public getCookie(cookieName: string): string {
+    const cookieRow: string = this.getCookieRow(cookieName);
+
+    return cookieRow.split('=')[1];
+  }
+
+  private getCookieRow(cookieName: string): string {
+    const cookieRow: string | undefined = this.document.cookie
+      .split('; ')
+      .find(row => row.startsWith('CSRF-TOKEN'));
+
+    return cookieRow !== undefined ? cookieRow : '=';
+  }
 }
 
 export class OptionElementBuilder {

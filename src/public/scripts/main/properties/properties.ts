@@ -21,4 +21,7 @@ export class Properties {
   public static INDEXED_BD_OBJECT_STORE_SIMPLE_SCOREBOARD: string = "quizquizquiz-object-store-best-scoreboard";
   public static INDEXED_BD_OBJECT_STORE_DETAILED_SCOREBOARD: string = "quizquizquiz-object-store-detailed-scoreboard";
 
+  public static CRSF_COOKIE_NAME: string = 'CSRF-TOKEN';
+  public static CRSF_INPUT_ID: string = 'crsf';
+
 }

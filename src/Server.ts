@@ -13,6 +13,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
+import {csrfCookieSetter, csrfProtectionMiddleware} from './routes/middlewares/csrf';
 
 // Init express
 const app = express();
@@ -21,13 +22,12 @@ const app = express();
 /************************************************************************************
  *                              Set basic express settings
  ***********************************************************************************/
-
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
 app.use(session({
     store: new SQLiteStore(),
-    secret: 'pozdrawiamPanaCiebiere4242',
+    secret: 'pozdrawiamPanaCiebiere42',
     cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
 }));
 
@@ -60,12 +60,6 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
-const staticDir = path.join(__dirname, 'public');
-app.use(express.static(staticDir));
-app.use('/static', express.static(path.join(__dirname, 'public')));
-// app.get('*', (req: Request, res: Response) => {
-//     res.sendFile('quiz.html', {root: viewsDir});
-// });
+app.use('/static', csrfProtectionMiddleware, csrfCookieSetter, express.static(path.join(__dirname, 'public')));
 
-// Export express instance
 export default app;

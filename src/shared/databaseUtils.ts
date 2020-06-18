@@ -11,10 +11,11 @@ export function asyncDbGet(query: string, params?: any[]): Promise<any> {
         resolve(row)
       }
     })
-  })
+  });
 }
 
-export const asyncDbRun = async (query: string, params?: any[]): Promise<void> => {
+
+export function asyncDbRun(query: string, params?: any[]): Promise<void> {
   return new Promise((resolve, reject) => {
     db.run(query, params, (err) => {
       if (err) {
@@ -22,6 +23,6 @@ export const asyncDbRun = async (query: string, params?: any[]): Promise<void> =
       } else {
         resolve();
       }
-    });
+    })
   });
-};
+}

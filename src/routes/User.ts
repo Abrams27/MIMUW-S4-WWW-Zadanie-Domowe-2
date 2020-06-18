@@ -3,6 +3,7 @@ import 'express-session';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
 import {asyncDbGet, asyncDbRun} from '@shared/databaseUtils';
 import {comparePasswordWithHash, hashPassword} from '@shared/hashUtils';
+import {csrfProtectionMiddleware} from './middlewares/csrf';
 
 const router = Router();
 
@@ -13,7 +14,7 @@ interface User {
   password_generation: number
 }
 
-router.post('/login', async (req: Request, res: Response) => {
+router.post('/login', csrfProtectionMiddleware, async (req: Request, res: Response) => {
   const username = req.body.username;
   const password = req.body.password;
 
@@ -97,7 +98,7 @@ function isUserLogged(req: Request, user: User): boolean {
   return user.password_generation === req.session!.password_generation;
 }
 
-router.post('/change', isUserLoggedMiddleware, async (req: Request, res: Response) => {
+router.post('/change', csrfProtectionMiddleware, isUserLoggedMiddleware, async (req: Request, res: Response) => {
   const oldPassword: string = req.body.oldPassword;
   const newPassword: string = req.body.newPassword;
   const newPasswordConfirmation: string = req.body.newPasswordConfirmation;

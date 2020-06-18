@@ -100,6 +100,16 @@ export class DocumentEditor {
     getDocument() {
         return this.document;
     }
+    getCookie(cookieName) {
+        const cookieRow = this.getCookieRow(cookieName);
+        return cookieRow.split('=')[1];
+    }
+    getCookieRow(cookieName) {
+        const cookieRow = this.document.cookie
+            .split('; ')
+            .find(row => row.startsWith('CSRF-TOKEN'));
+        return cookieRow !== undefined ? cookieRow : '=';
+    }
 }
 let OptionElementBuilder = /** @class */ (() => {
     class OptionElementBuilder {
