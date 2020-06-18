@@ -3,11 +3,11 @@ import 'express-session';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
 import {asyncDbGet, asyncDbRun} from '@shared/databaseUtils';
 import {comparePasswordWithHash, hashPassword} from '@shared/hashUtils';
-import {csrfProtectionMiddleware} from './middlewares/csrf';
+import {csrfProtectionMiddleware} from '../middlewares/csrf';
 
 const router = Router();
 
-interface User {
+interface UserRoute {
   id: number,
   username: string,
   password_hash: string,
@@ -35,7 +35,7 @@ async function loginUser(req: Request, username: string, password: string): Prom
   const user = await getUserWithName(username);
 
   if (user !== undefined) {
-    const correctUser: User = user as User;
+    const correctUser: UserRoute = user as UserRoute;
     const isPasswordCorrect = comparePasswordWithHash(password, correctUser.password_hash);
 
     if (isPasswordCorrect) {
@@ -50,7 +50,7 @@ async function getUserWithName(username: string): Promise<any> {
   return await asyncDbGet('SELECT * FROM users WHERE username = ?', [username]);
 }
 
-function loginCorrectUser(req: Request, user: User): boolean {
+function loginCorrectUser(req: Request, user: UserRoute): boolean {
   if (req.session !== undefined) {
     req.session.username = user.username;
     req.session.user_id = user.id;
@@ -82,7 +82,7 @@ async function isUserLoggedMiddleware(req: Request, res: Response, next: NextFun
     const user: any = await getUserWithName(username);
 
     if (user !== undefined) {
-      const correctUser: User = user as User;
+      const correctUser: UserRoute = user as UserRoute;
 
       if (isUserLogged(req, correctUser)) {
         next();
@@ -94,7 +94,7 @@ async function isUserLoggedMiddleware(req: Request, res: Response, next: NextFun
   res.redirect('/static/login.html');
 }
 
-function isUserLogged(req: Request, user: User): boolean {
+function isUserLogged(req: Request, user: UserRoute): boolean {
   return user.password_generation === req.session!.password_generation;
 }
 
@@ -121,7 +121,7 @@ async function changeUserPassword(req: Request, username: string, oldPassword: s
   const user = await getUserWithName(username);
 
   if (newPassword === newPasswordConfirmation && user !== undefined) {
-    const correctUser: User = user as User;
+    const correctUser: UserRoute = user as UserRoute;
 
     await changeUserPasswordWithConfirmedPassword(req, correctUser, newPassword);
     return true;
@@ -130,13 +130,13 @@ async function changeUserPassword(req: Request, username: string, oldPassword: s
   return false;
 }
 
-async function changeUserPasswordWithConfirmedPassword(req: Request, user: User, newPassword: string) {
+async function changeUserPasswordWithConfirmedPassword(req: Request, user: UserRoute, newPassword: string) {
   await updateUserPasswordAndPasswordGeneration(user, newPassword);
 
   req.session!.password_generation += 1;
 }
 
-async function updateUserPasswordAndPasswordGeneration(user: User, newPassword: string) {
+async function updateUserPasswordAndPasswordGeneration(user: UserRoute, newPassword: string) {
   const hashedNewPassword: string = hashPassword(newPassword);
   const newPasswordGeneration: number = user.password_generation + 1;
   const username: string = user.username;

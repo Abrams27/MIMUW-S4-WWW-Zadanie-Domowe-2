@@ -26,3 +26,16 @@ export function asyncDbRun(query: string, params?: any[]): Promise<void> {
     })
   });
 }
+
+
+export function asyncDbAll(query: string, params?: any[]): Promise<any[]> {
+  return new Promise((resolve, reject) => {
+    db.all(query, params, (err, list) => {
+      if (err) {
+        reject(new Error('Database error.'));
+      } else {
+        resolve(list);
+      }
+    })
+  });
+}
