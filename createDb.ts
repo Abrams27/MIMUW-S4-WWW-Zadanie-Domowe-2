@@ -39,9 +39,9 @@ db.serialize(() => {
   db.run('INSERT INTO quizzes VALUES (1, ?, ?)', ['alkoholowo matematyczny quiz', exampleQuiz]);
   db.run('INSERT INTO quizzes VALUES (2, ?, ?)', ['alkoholowo matematyczny quiz XDDDDDDD', exampleQuiz]);
 
-  db.run('CREATE TABLE scores (id INTEGER PRIMARY KEY, score INTEGER )');
-  db.run('INSERT INTO scores VALUES (1, ?)', [21372137]);
-  db.run('INSERT INTO scores VALUES (2, ?)', [1822]);
-  db.run('INSERT INTO scores VALUES (3, ?)', [6969]);
+  db.run('CREATE TABLE scores (id INTEGER PRIMARY KEY, quiz_id INTEGER REFERENCES quizzes(id) , score INTEGER )');
+  db.run('INSERT INTO scores VALUES (1, ?, ?)', [2, 21372137]);
+  db.run('INSERT INTO scores VALUES (2, ?, ?)', [1, 1822]);
+  db.run('INSERT INTO scores VALUES (3, ?, ?)', [1, 6969]);
 
 });

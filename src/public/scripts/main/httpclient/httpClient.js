@@ -19,6 +19,13 @@ export class HttpClient {
                 .map(element => element.name);
         });
     }
+    getQuizWithName(quizName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return yield fetch(this.getUrl(`/api/quiz/name/${quizName}`))
+                .then(response => response.json())
+                .then(response => response.quiz);
+        });
+    }
     getTopScores() {
         return __awaiter(this, void 0, void 0, function* () {
             const fetchResult = yield fetch(this.getUrl('/api/quiz/scores'))

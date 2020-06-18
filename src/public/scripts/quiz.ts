@@ -1,24 +1,29 @@
 import {Properties} from './main/properties/properties.js';
 import {QuizProperties} from './main/properties/quizProperties.js';
 import {DocumentEditor, SelectEditor} from './main/editors/documentEditors.js';
-import {Quiz, Quizzes} from './main/quizzes/quizzes.js';
 import {ScoreboardTableEditor} from './main/editors/quizEditors.js';
 import {QuizScore} from './main/scoreboards/scoreboard.js';
-import {IndexedDBClient} from './main/persistence/indexedDBClient.js';
 import {HttpClient} from './main/httpclient/httpClient.js';
+
 
 const documentEditor: DocumentEditor = DocumentEditor.fromDocument(document);
 
-const quizzes: Quizzes = new Quizzes();
 const httpClient: HttpClient = new HttpClient();
 
-const selectEditor: SelectEditor = new SelectEditor(document, QuizProperties.QUIZ_SELECTION_SELECT_ID);
-
-httpClient.getQuizzesNamesList()
-  .then(quizzesNamesArray => selectEditor.addOptions(quizzesNamesArray, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID));
-
+const selectEditor: SelectEditor =
+    new SelectEditor(document, QuizProperties.QUIZ_SELECTION_SELECT_ID);
 const scoreboardTableEditor: ScoreboardTableEditor =
     new ScoreboardTableEditor(document, QuizProperties.QUIZ_SCOREBOARD_TABLE_ID, QuizProperties.QUIZ_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS);
+
+let chosenQuizName: string = '';
+
+httpClient.getQuizzesNamesList()
+  .then(quizzesNamesArray => updateChosenQuizAndAddOptions(quizzesNamesArray));
+
+function updateChosenQuizAndAddOptions(quizzesNames: string[]) {
+  chosenQuizName = quizzesNames[0] !== undefined ? quizzesNames[0] : '';
+  selectEditor.addOptions(quizzesNames, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID)
+}
 
 httpClient.getTopScores()
   .then(result => mapScoresAndAddRows(result));
@@ -30,6 +35,7 @@ function mapScoresAndAddRows(scores: number[]) {
 
   scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores);
 }
+
 const quizSelectionForm: HTMLFormElement = documentEditor.getElement(QuizProperties.QUIZ_SELECTION_FORM_ID) as HTMLFormElement;
 quizSelectionForm.addEventListener(Properties.INPUT_TAG, quizSelectionFormInputListener);
 
@@ -37,16 +43,15 @@ const startQuizButton: HTMLButtonElement = documentEditor.getElement(QuizPropert
 startQuizButton.addEventListener(Properties.CLICK_EVENT_TYPE, startQuizButtonClickListener);
 
 function quizSelectionFormInputListener(event: any) {
-  const chosenQuizName = event.target.value;
-
-  quizzes.updateChosenQuiz(chosenQuizName);
+  chosenQuizName = event.target.value;
 }
 
 function startQuizButtonClickListener() {
-  const chosenQuiz: Quiz = quizzes.getChosenQuiz();
-  const chosenQuizJson: string = chosenQuiz.toJson();
-
-  sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, chosenQuizJson);
-  location.href = Properties.QUIZ_QUESTION_HTML_FILE;
+  httpClient.getQuizWithName(chosenQuizName)
+    .then(quiz => setQuizAndRedirect(quiz));
 }
 
+function setQuizAndRedirect(quiz: string) {
+  sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, quiz);
+  location.href = Properties.QUIZ_QUESTION_HTML_FILE;
+}
