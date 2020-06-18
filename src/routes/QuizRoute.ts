@@ -8,10 +8,16 @@ const router = Router();
 
 router.get('/list', async (req: Request, res: Response) => {
   const all = await asyncDbAll('SELECT name FROM quizzes');
-  
+
   res.json(all);
   return res.status(OK).end();
 });
 
+router.get('/scores', async (req: Request, res: Response) => {
+  const all: number[] = await asyncDbAll('SELECT score FROM scores');
+
+  res.json(all);
+  return res.status(OK).end();
+});
 
 export default router;

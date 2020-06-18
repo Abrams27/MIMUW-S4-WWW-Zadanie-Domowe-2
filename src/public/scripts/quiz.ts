@@ -15,17 +15,21 @@ const httpClient: HttpClient = new HttpClient();
 const selectEditor: SelectEditor = new SelectEditor(document, QuizProperties.QUIZ_SELECTION_SELECT_ID);
 
 httpClient.getQuizzesNamesList()
-.then(quizzesNamesArray => selectEditor.addOptions(quizzesNamesArray, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID));
+  .then(quizzesNamesArray => selectEditor.addOptions(quizzesNamesArray, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID));
 
 const scoreboardTableEditor: ScoreboardTableEditor =
     new ScoreboardTableEditor(document, QuizProperties.QUIZ_SCOREBOARD_TABLE_ID, QuizProperties.QUIZ_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS);
 
-const scoreTableScoresUpdater = (quizScoresArray: QuizScore[]) =>
-    scoreboardTableEditor.addRowsWithScoresInGivenOrder(quizScoresArray.sort((a, b) => a.compare(b)));
+httpClient.getTopScores()
+  .then(result => mapScoresAndAddRows(result));
 
-IndexedDBClient.getAllScoresAndInsertToTableWithSupplier(scoreTableScoresUpdater);
+function mapScoresAndAddRows(scores: number[]) {
+  const mappedAndSortedScores: QuizScore[] = scores
+    .map(o => new QuizScore(o))
+    .sort((a, b) => a.compare(b));
 
-
+  scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores);
+}
 const quizSelectionForm: HTMLFormElement = documentEditor.getElement(QuizProperties.QUIZ_SELECTION_FORM_ID) as HTMLFormElement;
 quizSelectionForm.addEventListener(Properties.INPUT_TAG, quizSelectionFormInputListener);
 

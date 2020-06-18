@@ -13,10 +13,21 @@ export class HttpClient {
     }
     getQuizzesNamesList() {
         return __awaiter(this, void 0, void 0, function* () {
-            const fetchResult = yield fetch('http://localhost:3000/api/quiz/list')
+            const fetchResult = yield fetch(this.getUrl('/api/quiz/list'))
                 .then(response => response.json());
             return fetchResult
                 .map(element => element.name);
         });
+    }
+    getTopScores() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fetchResult = yield fetch(this.getUrl('/api/quiz/scores'))
+                .then(response => response.json());
+            return fetchResult
+                .map(element => element.score);
+        });
+    }
+    getUrl(resource) {
+        return `${this.host}${resource}`;
     }
 }
