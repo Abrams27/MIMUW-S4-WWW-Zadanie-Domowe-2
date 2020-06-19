@@ -34,6 +34,19 @@ export class HttpClient {
                 .map(element => element.score);
         });
     }
+    postQuizResults(quizName, quizResults, csrfToken) {
+        console.log(quizName);
+        console.log(quizResults);
+        return fetch(this.getUrl(`/api/quiz/name/${quizName}`), {
+            method: 'POST',
+            body: quizResults,
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-CSRF-Token': csrfToken
+            }
+        });
+        // .then(response => if);
+    }
     getUrl(resource) {
         return `${this.host}${resource}`;
     }

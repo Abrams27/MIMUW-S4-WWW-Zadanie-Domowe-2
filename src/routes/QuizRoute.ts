@@ -2,6 +2,7 @@ import {Request, Response, Router} from 'express';
 import 'express-session';
 import {OK} from 'http-status-codes';
 import {asyncDbAll, asyncDbGet} from '@shared/databaseUtils';
+import {csrfProtectionMiddleware} from '../middlewares/csrf';
 
 const router = Router();
 
@@ -24,6 +25,13 @@ router.get('/name/:quizName', async (req: Request, res: Response) => {
   const all = await asyncDbGet('SELECT quiz FROM quizzes WHERE name = ?', [req.params.quizName]);
 
   res.json(all);
+  return res.status(OK).end();
+});
+
+router.post('/name/:quizName', csrfProtectionMiddleware, async (req: Request, res: Response) => {
+  // const all = await asyncDbGet('SELECT quiz FROM quizzes WHERE name = ?', [req.params.quizName]);
+  console.log(req.body);
+  // res.json(all);
   return res.status(OK).end();
 });
 

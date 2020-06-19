@@ -1,13 +1,18 @@
-import { Properties } from "./main/properties/properties.js";
-import { Quiz } from "./main/quizzes/quizzes.js";
-import { Utils } from "./main/utils/utils.js";
-import { DocumentEditor } from "./main/editors/documentEditors.js";
-import { QuizSession } from "./main/quizzes/quizSession.js";
-import { CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch } from "./main/editors/quizQuestionEditors.js";
-import { QuizQuestionProperties } from "./main/properties/quizQuestionProperties.js";
+import { Properties } from './main/properties/properties.js';
+import { Quiz } from './main/quizzes/quizzes.js';
+import { Utils } from './main/utils/utils.js';
+import { DocumentEditor } from './main/editors/documentEditors.js';
+import { QuizSession } from './main/quizzes/quizSession.js';
+import { CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch } from './main/editors/quizQuestionEditors.js';
+import { QuizQuestionProperties } from './main/properties/quizQuestionProperties.js';
+import { QuizPercentageTimeDetailedScoreboard } from './main/scoreboards/scoreboard.js';
+import { HttpClient } from './main/httpclient/httpClient.js';
+const httpClient = new HttpClient();
 const documentEditor = DocumentEditor.fromDocument(document);
+const crsfCookie = documentEditor.getCookie(Properties.CRSF_COOKIE_NAME);
+console.log(crsfCookie);
 const nullableQuizJson = sessionStorage.getItem(Properties.QUIZ_SESSION_STORAGE_KEY);
-const quizJson = Utils.getStringOrThrowError(nullableQuizJson, "invalid session storage key");
+const quizJson = Utils.getStringOrThrowError(nullableQuizJson, 'invalid session storage key');
 const quiz = Quiz.fromJson(quizJson);
 const quizSession = QuizSession.startWithQuiz(quiz);
 const currentQuizSessionPageUpdater = new CurrentQuizSessionPageEditor(document, quizSession);
@@ -43,6 +48,7 @@ function removeUserAnswer() {
 }
 function cancelButtonClickListener() {
     sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
+    // todo tutaj tez cos!!!
     location.href = Properties.QUIZ_HTML_FILE;
 }
 function navigationBackButtonClickListener() {
@@ -52,7 +58,13 @@ function navigationBackButtonClickListener() {
 }
 function navigationStopButtonClickListener() {
     const quizDetaildedScoreboard = quizSession.getDetailedScoreboard();
-    const quizDetaildedScoreboardJson = quizDetaildedScoreboard.toJson();
+    const quizPercentageTimeDetailedScoreboard = QuizPercentageTimeDetailedScoreboard.fromQuizDetailedScoreboard(quizDetaildedScoreboard);
+    const quizPercentageTimeDetailedScoreboardJson = quizPercentageTimeDetailedScoreboard.toJson();
+    // todo obsluga?
+    httpClient.postQuizResults(quiz.getName(), quizPercentageTimeDetailedScoreboardJson, crsfCookie)
+        .then(_ => postQuizResultsAndRedirect(quizPercentageTimeDetailedScoreboardJson));
+}
+function postQuizResultsAndRedirect(quizDetaildedScoreboardJson) {
     sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
     sessionStorage.setItem(Properties.QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY, quizDetaildedScoreboardJson);
     location.href = Properties.QUIZ_ENDING_HTML_FILE;
@@ -103,6 +115,6 @@ function getUserAnswerForCurrentQuestionOrEmpty() {
         return String(quizSession.getUserAnswerForCurrentQuestion());
     }
     else {
-        return "";
+        return '';
     }
 }

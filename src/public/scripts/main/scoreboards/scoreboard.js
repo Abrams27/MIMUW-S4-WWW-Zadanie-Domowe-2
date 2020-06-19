@@ -1,4 +1,4 @@
-import { QuizDetailedScoreboardGuard } from "../typeguards/typeguards.js";
+import { QuizDetailedScoreboardGuard } from '../typeguards/typeguards.js';
 export class QuizDetailedScoreboard {
     constructor(questionsStatistics) {
         this.questionsStatistics = questionsStatistics;
@@ -14,7 +14,7 @@ export class QuizDetailedScoreboard {
             return new QuizDetailedScoreboard(questionsStatistics);
         }
         else {
-            throw new Error("invalid scoreboard json format");
+            throw new Error('invalid scoreboard json format');
         }
     }
     static copyOfQuestionStatisticsArray(questionsStatistics) {
@@ -52,28 +52,6 @@ export class QuizDetailedScoreboard {
             .reduce((sum, score) => sum + score);
     }
 }
-export class QuizScore {
-    constructor(score) {
-        this.score = score;
-    }
-    getScore() {
-        return this.score;
-    }
-    static copyOf(quizScore) {
-        return new QuizScore(quizScore.score);
-    }
-    compare(quizScore) {
-        if (this.score < quizScore.score) {
-            return -1;
-        }
-        else if (this.score > quizScore.score) {
-            return 1;
-        }
-        else {
-            return 0;
-        }
-    }
-}
 export class QuestionStatistics {
     constructor(isAnswerCorrect, timePenalty, timeSpendInSeconds) {
         this.isAnswerCorrectFlag = isAnswerCorrect;
@@ -98,6 +76,67 @@ export class QuestionStatistics {
         }
         else {
             return this.timeSpendInSeconds + this.timePenalty;
+        }
+    }
+}
+export class QuizPercentageTimeDetailedScoreboard {
+    constructor(questionPercentageTimeStatistics, quizScore) {
+        this.questionPercentageTimeStatistics = questionPercentageTimeStatistics;
+        this.quizScore = quizScore;
+    }
+    static fromQuizDetailedScoreboard(quizDetailedScoreboard) {
+        const questionPercentageTimeStatistic = QuizPercentageTimeDetailedScoreboard.mapQuestionPercentageTimeStatistics(quizDetailedScoreboard.getQuestionsStatistics());
+        const quizScore = quizDetailedScoreboard.getQuizScore();
+        return new QuizPercentageTimeDetailedScoreboard(questionPercentageTimeStatistic, quizScore);
+    }
+    static mapQuestionPercentageTimeStatistics(questionsStatistics) {
+        const whileTime = QuizPercentageTimeDetailedScoreboard.calculateWhileTime(questionsStatistics);
+        return questionsStatistics
+            .map(questionsStatistic => QuestionPercentageTimeStatistics.fromQuestionStatistics(questionsStatistic, whileTime));
+    }
+    static calculateWhileTime(questionsStatistics) {
+        return questionsStatistics
+            .map(questionsStatistic => questionsStatistic.getAnswerTime())
+            .reduce((value, sum) => sum + value);
+    }
+    toJson() {
+        return JSON.stringify(this);
+    }
+}
+export class QuestionPercentageTimeStatistics {
+    constructor(isAnswerCorrect, timePenalty, timeSpendPercentage) {
+        this.isAnswerCorrectFlag = isAnswerCorrect;
+        this.timePenalty = timePenalty;
+        this.timeSpendPercentage = timeSpendPercentage;
+    }
+    static fromQuestionStatistics(questionStatistics, wholeTime) {
+        const timeSpendPercentage = QuestionPercentageTimeStatistics
+            .calculateTimeSpendPercentage(questionStatistics.getAnswerTime(), wholeTime);
+        return new QuestionPercentageTimeStatistics(questionStatistics.isAnswerCorrect(), questionStatistics.getTimePenalty(), timeSpendPercentage);
+    }
+    static calculateTimeSpendPercentage(timeSpendInSeconds, wholeTime) {
+        return timeSpendInSeconds * 100 / wholeTime;
+    }
+}
+export class QuizScore {
+    constructor(score) {
+        this.score = score;
+    }
+    getScore() {
+        return this.score;
+    }
+    static copyOf(quizScore) {
+        return new QuizScore(quizScore.score);
+    }
+    compare(quizScore) {
+        if (this.score < quizScore.score) {
+            return -1;
+        }
+        else if (this.score > quizScore.score) {
+            return 1;
+        }
+        else {
+            return 0;
         }
     }
 }

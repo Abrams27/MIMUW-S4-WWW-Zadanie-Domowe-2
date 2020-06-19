@@ -1,10 +1,10 @@
-import {QuizQuestionWithAnswersAndTime} from "../quizzes/quizzes.js";
-import {QuizDetailedScoreboardGuard} from "../typeguards/typeguards.js";
+import {QuizQuestionWithAnswersAndTime} from '../quizzes/quizzes.js';
+import {QuizDetailedScoreboardGuard} from '../typeguards/typeguards.js';
 
 export class QuizDetailedScoreboard {
 
-  private questionsStatistics: QuestionStatistics[];
-  private quizScore: QuizScore;
+  private readonly questionsStatistics: QuestionStatistics[];
+  private readonly quizScore: QuizScore;
 
   private constructor(questionsStatistics: QuestionStatistics[]) {
     this.questionsStatistics = questionsStatistics;
@@ -22,7 +22,7 @@ export class QuizDetailedScoreboard {
       const questionsStatistics: QuestionStatistics[] = this.copyOfQuestionStatisticsArray(parsedQuizDetailedScoreboardJson.questionsStatistics);
       return new QuizDetailedScoreboard(questionsStatistics);
     } else {
-      throw new Error("invalid scoreboard json format");
+      throw new Error('invalid scoreboard json format');
     }
   }
 
@@ -72,35 +72,6 @@ export class QuizDetailedScoreboard {
 }
 
 
-export class QuizScore {
-
-  private readonly score: number;
-
-  public constructor(score: number) {
-    this.score = score;
-  }
-
-  public getScore(): number {
-    return this.score;
-  }
-
-  public static copyOf(quizScore: QuizScore): QuizScore {
-    return new QuizScore(quizScore.score);
-  }
-
-  public compare(quizScore: QuizScore): number {
-    if (this.score < quizScore.score) {
-      return -1;
-    } else if (this.score > quizScore.score) {
-      return 1;
-    } else {
-      return 0;
-    }
-  }
-
-}
-
-
 export class QuestionStatistics {
 
   private readonly isAnswerCorrectFlag: boolean;
@@ -137,6 +108,100 @@ export class QuestionStatistics {
       return this.timeSpendInSeconds;
     } else {
       return this.timeSpendInSeconds + this.timePenalty;
+    }
+  }
+
+}
+
+
+export class QuizPercentageTimeDetailedScoreboard {
+
+  private readonly questionPercentageTimeStatistics: QuestionPercentageTimeStatistics[];
+  private readonly quizScore: QuizScore;
+
+  private constructor(questionPercentageTimeStatistics: QuestionPercentageTimeStatistics[], quizScore: QuizScore) {
+    this.questionPercentageTimeStatistics = questionPercentageTimeStatistics;
+    this.quizScore = quizScore;
+  }
+
+  public static fromQuizDetailedScoreboard(quizDetailedScoreboard: QuizDetailedScoreboard) {
+    const questionPercentageTimeStatistic: QuestionPercentageTimeStatistics[] =
+        QuizPercentageTimeDetailedScoreboard.mapQuestionPercentageTimeStatistics(quizDetailedScoreboard.getQuestionsStatistics());
+    const quizScore: QuizScore = quizDetailedScoreboard.getQuizScore();
+
+    return new QuizPercentageTimeDetailedScoreboard(questionPercentageTimeStatistic, quizScore);
+  }
+
+  private static mapQuestionPercentageTimeStatistics(questionsStatistics: QuestionStatistics[]): QuestionPercentageTimeStatistics[] {
+    const whileTime: number = QuizPercentageTimeDetailedScoreboard.calculateWhileTime(questionsStatistics);
+
+    return questionsStatistics
+      .map(questionsStatistic => QuestionPercentageTimeStatistics.fromQuestionStatistics(questionsStatistic, whileTime));
+  }
+
+  private static calculateWhileTime(questionsStatistics: QuestionStatistics[]): number {
+    return questionsStatistics
+      .map(questionsStatistic => questionsStatistic.getAnswerTime())
+      .reduce((value, sum) => sum + value);
+  }
+
+  public toJson(): string {
+    return JSON.stringify(this);
+  }
+
+}
+
+
+export class QuestionPercentageTimeStatistics {
+  private readonly isAnswerCorrectFlag: boolean;
+  private readonly timePenalty: number;
+  private readonly timeSpendPercentage: number;
+
+  private constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendPercentage: number) {
+    this.isAnswerCorrectFlag = isAnswerCorrect;
+    this.timePenalty = timePenalty;
+    this.timeSpendPercentage = timeSpendPercentage;
+  }
+
+  public static fromQuestionStatistics(questionStatistics: QuestionStatistics, wholeTime: number) {
+    const timeSpendPercentage: number = QuestionPercentageTimeStatistics
+      .calculateTimeSpendPercentage(questionStatistics.getAnswerTime(), wholeTime);
+
+    return new QuestionPercentageTimeStatistics(
+        questionStatistics.isAnswerCorrect(),
+        questionStatistics.getTimePenalty(),
+        timeSpendPercentage);
+  }
+
+  private static calculateTimeSpendPercentage(timeSpendInSeconds: number, wholeTime: number): number {
+    return timeSpendInSeconds * 100 / wholeTime;
+  }
+}
+
+
+export class QuizScore {
+
+  private readonly score: number;
+
+  public constructor(score: number) {
+    this.score = score;
+  }
+
+  public getScore(): number {
+    return this.score;
+  }
+
+  public static copyOf(quizScore: QuizScore): QuizScore {
+    return new QuizScore(quizScore.score);
+  }
+
+  public compare(quizScore: QuizScore): number {
+    if (this.score < quizScore.score) {
+      return -1;
+    } else if (this.score > quizScore.score) {
+      return 1;
+    } else {
+      return 0;
     }
   }
 

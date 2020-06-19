@@ -1,17 +1,22 @@
-import {Properties} from "./main/properties/properties.js";
-import {Quiz} from "./main/quizzes/quizzes.js";
-import {Utils} from "./main/utils/utils.js";
-import {DocumentEditor} from "./main/editors/documentEditors.js";
-import {QuizSession} from "./main/quizzes/quizSession.js";
-import {CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch} from "./main/editors/quizQuestionEditors.js";
-import {QuizQuestionProperties} from "./main/properties/quizQuestionProperties.js";
-import {QuizDetailedScoreboard} from "./main/scoreboards/scoreboard.js";
+import {Properties} from './main/properties/properties.js';
+import {Quiz} from './main/quizzes/quizzes.js';
+import {Utils} from './main/utils/utils.js';
+import {DocumentEditor} from './main/editors/documentEditors.js';
+import {QuizSession} from './main/quizzes/quizSession.js';
+import {CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch} from './main/editors/quizQuestionEditors.js';
+import {QuizQuestionProperties} from './main/properties/quizQuestionProperties.js';
+import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from './main/scoreboards/scoreboard.js';
+import {HttpClient} from './main/httpclient/httpClient.js';
 
 
+const httpClient: HttpClient = new HttpClient();
 const documentEditor: DocumentEditor = DocumentEditor.fromDocument(document);
 
+const crsfCookie: string = documentEditor.getCookie(Properties.CRSF_COOKIE_NAME);
+console!.log(crsfCookie);
+
 const nullableQuizJson: string | null = sessionStorage.getItem(Properties.QUIZ_SESSION_STORAGE_KEY);
-const quizJson: string = Utils.getStringOrThrowError(nullableQuizJson, "invalid session storage key");
+const quizJson: string = Utils.getStringOrThrowError(nullableQuizJson, 'invalid session storage key');
 const quiz: Quiz = Quiz.fromJson(quizJson);
 const quizSession: QuizSession = QuizSession.startWithQuiz(quiz);
 
@@ -20,20 +25,20 @@ const currentQuizSessionPageUpdater: CurrentQuizSessionPageEditor = new CurrentQ
 CurrentQuizSessionPageEditorStopwatch.forUpdaterAndStart(currentQuizSessionPageUpdater);
 
 
-const answerInput: HTMLInputElement = <HTMLInputElement>documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_ANSWER_INPUT_ID);
+const answerInput: HTMLInputElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_ANSWER_INPUT_ID) as HTMLInputElement;
 answerInput.addEventListener(Properties.INPUT_EVENT_TYPE, answerInputListener);
 answerInput.placeholder = QuizQuestionProperties.QUIZ_QUESTION_ANSWER_INPUT_PLACEHOLDER;
 
-const cancelButton: HTMLButtonElement = <HTMLButtonElement>documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_CANCEL_BUTTON_ID);
+const cancelButton: HTMLButtonElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_CANCEL_BUTTON_ID) as HTMLButtonElement;
 cancelButton.addEventListener(Properties.CLICK_EVENT_TYPE, cancelButtonClickListener);
 
-const navigationBackButton: HTMLButtonElement = <HTMLButtonElement>documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_BACK_BUTTON_ID);
+const navigationBackButton: HTMLButtonElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_BACK_BUTTON_ID) as HTMLButtonElement;
 navigationBackButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationBackButtonClickListener);
 
-const navigationStopButton: HTMLButtonElement = <HTMLButtonElement>documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_STOP_BUTTON_ID);
+const navigationStopButton: HTMLButtonElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_STOP_BUTTON_ID) as HTMLButtonElement;
 navigationStopButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationStopButtonClickListener);
 
-const navigationNextButton: HTMLButtonElement = <HTMLButtonElement>documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_NEXT_BUTTON_ID);
+const navigationNextButton: HTMLButtonElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_NEXT_BUTTON_ID) as HTMLButtonElement;
 navigationNextButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationNextButtonClickListener);
 
 updateButtonsVisibilityIfNeededAndUpdatePage();
@@ -63,6 +68,7 @@ function removeUserAnswer() {
 function cancelButtonClickListener() {
   sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
 
+  // todo tutaj tez cos!!!
   location.href = Properties.QUIZ_HTML_FILE;
 }
 
@@ -74,13 +80,22 @@ function navigationBackButtonClickListener() {
 
 function navigationStopButtonClickListener() {
   const quizDetaildedScoreboard: QuizDetailedScoreboard = quizSession.getDetailedScoreboard();
-  const quizDetaildedScoreboardJson: string = quizDetaildedScoreboard.toJson();
+  const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard =
+      QuizPercentageTimeDetailedScoreboard.fromQuizDetailedScoreboard(quizDetaildedScoreboard);
+  const quizPercentageTimeDetailedScoreboardJson: string = quizPercentageTimeDetailedScoreboard.toJson();
 
+  // todo obsluga?
+  httpClient.postQuizResults(quiz.getName(), quizPercentageTimeDetailedScoreboardJson, crsfCookie)
+    .then(_ => postQuizResultsAndRedirect(quizPercentageTimeDetailedScoreboardJson));
+}
+
+function postQuizResultsAndRedirect(quizDetaildedScoreboardJson: string) {
   sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
   sessionStorage.setItem(Properties.QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY, quizDetaildedScoreboardJson);
 
   location.href = Properties.QUIZ_ENDING_HTML_FILE;
 }
+
 
 function navigationNextButtonClickListener() {
   quizSession.loadNextQuestion();
@@ -131,6 +146,6 @@ function getUserAnswerForCurrentQuestionOrEmpty(): string {
   if (quizSession.doesUserAnsweredForCurrentQuestion()) {
     return String(quizSession.getUserAnswerForCurrentQuestion());
   } else {
-    return "";
+    return '';
   }
 }

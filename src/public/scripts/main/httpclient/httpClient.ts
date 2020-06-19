@@ -26,6 +26,20 @@ export class HttpClient {
       .map(element => element.score);
   }
 
+  public postQuizResults(quizName: string, quizResults: string, csrfToken: string): Promise<any> {
+    console.log(quizName);
+    console.log(quizResults);
+    return fetch(this.getUrl(`/api/quiz/name/${quizName}`), {
+      method: 'POST',
+      body: quizResults,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'X-CSRF-Token': csrfToken
+      }
+    });
+    // .then(response => if);
+  }
+
   private getUrl(resource: string): string {
     return `${this.host}${resource}`;
   }
