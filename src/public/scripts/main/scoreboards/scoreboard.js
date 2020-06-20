@@ -4,9 +4,6 @@ export class QuizDetailedScoreboard {
         this.questionsStatistics = questionsStatistics;
         this.quizScore = new QuizScore(this.calculateResultWithPenalties());
     }
-    static fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers) {
-        return new QuizDetailedScoreboard(this.mapQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers));
-    }
     static fromJson(quizDetailedScoreboardJson) {
         const parsedQuizDetailedScoreboardJson = JSON.parse(quizDetailedScoreboardJson);
         if (QuizDetailedScoreboardGuard.check(parsedQuizDetailedScoreboardJson)) {
@@ -80,23 +77,22 @@ export class QuestionStatistics {
     }
 }
 export class QuizPercentageTimeDetailedScoreboard {
-    constructor(questionPercentageTimeStatistics, quizScore) {
+    constructor(quizName, questionPercentageTimeStatistics) {
+        this.quizName = quizName;
         this.questionPercentageTimeStatistics = questionPercentageTimeStatistics;
-        this.quizScore = quizScore;
     }
-    static fromQuizDetailedScoreboard(quizDetailedScoreboard) {
-        const questionPercentageTimeStatistic = QuizPercentageTimeDetailedScoreboard.mapQuestionPercentageTimeStatistics(quizDetailedScoreboard.getQuestionsStatistics());
-        const quizScore = quizDetailedScoreboard.getQuizScore();
-        return new QuizPercentageTimeDetailedScoreboard(questionPercentageTimeStatistic, quizScore);
+    static fromQuizQuestionWithAnswersAndTime(quizName, questionsListWithUserAnswers) {
+        const questionPercentageTimeStatistic = QuizPercentageTimeDetailedScoreboard.mapQuestionsListWithUserAnswers(questionsListWithUserAnswers);
+        return new QuizPercentageTimeDetailedScoreboard(quizName, questionPercentageTimeStatistic);
     }
-    static mapQuestionPercentageTimeStatistics(questionsStatistics) {
-        const whileTime = QuizPercentageTimeDetailedScoreboard.calculateWhileTime(questionsStatistics);
-        return questionsStatistics
-            .map(questionsStatistic => QuestionPercentageTimeStatistics.fromQuestionStatistics(questionsStatistic, whileTime));
+    static mapQuestionsListWithUserAnswers(questionsListWithUserAnswers) {
+        const wholeTime = QuizPercentageTimeDetailedScoreboard.calculateWholeTime(questionsListWithUserAnswers);
+        return questionsListWithUserAnswers
+            .map(questionsListWithUserAnswer => QuestionPercentageTimeStatistics.fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswer, wholeTime));
     }
-    static calculateWhileTime(questionsStatistics) {
-        return questionsStatistics
-            .map(questionsStatistic => questionsStatistic.getAnswerTime())
+    static calculateWholeTime(questionsListWithUserAnswers) {
+        return questionsListWithUserAnswers
+            .map(questionsListWithUserAnswer => questionsListWithUserAnswer.getUserAnswerTime())
             .reduce((value, sum) => sum + value);
     }
     toJson() {
@@ -104,15 +100,15 @@ export class QuizPercentageTimeDetailedScoreboard {
     }
 }
 export class QuestionPercentageTimeStatistics {
-    constructor(isAnswerCorrect, timePenalty, timeSpendPercentage) {
-        this.isAnswerCorrectFlag = isAnswerCorrect;
-        this.timePenalty = timePenalty;
+    constructor(answer, timeSpendPercentage) {
+        this.answer = answer;
         this.timeSpendPercentage = timeSpendPercentage;
     }
-    static fromQuestionStatistics(questionStatistics, wholeTime) {
+    static fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers, wholeTime) {
+        const userAnswer = questionsListWithUserAnswers.getUserAnswer();
         const timeSpendPercentage = QuestionPercentageTimeStatistics
-            .calculateTimeSpendPercentage(questionStatistics.getAnswerTime(), wholeTime);
-        return new QuestionPercentageTimeStatistics(questionStatistics.isAnswerCorrect(), questionStatistics.getTimePenalty(), timeSpendPercentage);
+            .calculateTimeSpendPercentage(questionsListWithUserAnswers.getUserAnswerTime(), wholeTime);
+        return new QuestionPercentageTimeStatistics(userAnswer, timeSpendPercentage);
     }
     static calculateTimeSpendPercentage(timeSpendInSeconds, wholeTime) {
         return timeSpendInSeconds * 100 / wholeTime;

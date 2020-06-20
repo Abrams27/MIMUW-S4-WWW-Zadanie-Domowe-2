@@ -1,4 +1,4 @@
-import { QuizDetailedScoreboard } from "../scoreboards/scoreboard.js";
+import { QuizPercentageTimeDetailedScoreboard } from '../scoreboards/scoreboard.js';
 export class QuizSession {
     constructor(quiz) {
         this.quiz = quiz;
@@ -79,8 +79,8 @@ export class QuizSession {
         return this.questionsListWithUserAnswers
             .every(question => question.doesUserAnswered());
     }
-    getDetailedScoreboard() {
-        return QuizDetailedScoreboard
-            .fromQuizQuestionWithAnswersAndTime(this.questionsListWithUserAnswers);
+    getQuizPercentageTimeDetailedScoreboard() {
+        return QuizPercentageTimeDetailedScoreboard
+            .fromQuizQuestionWithAnswersAndTime(this.quiz.getName(), this.questionsListWithUserAnswers);
     }
 }

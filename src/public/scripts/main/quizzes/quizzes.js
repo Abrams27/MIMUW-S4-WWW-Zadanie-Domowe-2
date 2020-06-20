@@ -93,7 +93,7 @@ export class QuizQuestionWithAnswersAndTime {
     }
     isUserAnswerCorrect() {
         return this.doesUserAnswered()
-            && this.userAnswer == this.quizQuestionWithAnswerJson.answer;
+            && this.userAnswer === this.quizQuestionWithAnswerJson.answer;
     }
     getQuestionText() {
         return this.quizQuestionWithAnswerJson.question;

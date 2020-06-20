@@ -5,7 +5,7 @@ import {DocumentEditor} from './main/editors/documentEditors.js';
 import {QuizSession} from './main/quizzes/quizSession.js';
 import {CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch} from './main/editors/quizQuestionEditors.js';
 import {QuizQuestionProperties} from './main/properties/quizQuestionProperties.js';
-import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from './main/scoreboards/scoreboard.js';
+import {QuizPercentageTimeDetailedScoreboard} from './main/scoreboards/scoreboard.js';
 import {HttpClient} from './main/httpclient/httpClient.js';
 
 
@@ -79,9 +79,7 @@ function navigationBackButtonClickListener() {
 }
 
 function navigationStopButtonClickListener() {
-  const quizDetaildedScoreboard: QuizDetailedScoreboard = quizSession.getDetailedScoreboard();
-  const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard =
-      QuizPercentageTimeDetailedScoreboard.fromQuizDetailedScoreboard(quizDetaildedScoreboard);
+  const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard = quizSession.getQuizPercentageTimeDetailedScoreboard();
   const quizPercentageTimeDetailedScoreboardJson: string = quizPercentageTimeDetailedScoreboard.toJson();
 
   // todo obsluga?

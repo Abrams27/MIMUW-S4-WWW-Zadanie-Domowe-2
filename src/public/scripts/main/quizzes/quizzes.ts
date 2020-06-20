@@ -132,7 +132,7 @@ export class QuizQuestionWithAnswersAndTime {
 
   public isUserAnswerCorrect(): boolean {
     return this.doesUserAnswered()
-      && this.userAnswer == this.quizQuestionWithAnswerJson.answer;
+      && this.userAnswer === this.quizQuestionWithAnswerJson.answer;
   }
 
   public getQuestionText(): string {

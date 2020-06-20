@@ -1,5 +1,5 @@
 import {Quiz, QuizQuestionWithAnswersAndTime} from "./quizzes.js";
-import {QuizDetailedScoreboard} from "../scoreboards/scoreboard.js";
+import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from '../scoreboards/scoreboard.js';
 
 
 export class QuizSession {
@@ -109,9 +109,9 @@ export class QuizSession {
       .every(question => question.doesUserAnswered());
   }
 
-  public getDetailedScoreboard(): QuizDetailedScoreboard {
-    return QuizDetailedScoreboard
-      .fromQuizQuestionWithAnswersAndTime(this.questionsListWithUserAnswers);
+  public getQuizPercentageTimeDetailedScoreboard(): QuizPercentageTimeDetailedScoreboard {
+    return QuizPercentageTimeDetailedScoreboard
+      .fromQuizQuestionWithAnswersAndTime(this.quiz.getName(), this.questionsListWithUserAnswers);
   }
 
 }

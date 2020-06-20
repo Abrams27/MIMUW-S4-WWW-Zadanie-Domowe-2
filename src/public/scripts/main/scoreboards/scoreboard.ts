@@ -11,10 +11,6 @@ export class QuizDetailedScoreboard {
     this.quizScore = new QuizScore(this.calculateResultWithPenalties());
   }
 
-  public static fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime[]): QuizDetailedScoreboard {
-    return new QuizDetailedScoreboard(this.mapQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers));
-  }
-
   public static fromJson(quizDetailedScoreboardJson: string): QuizDetailedScoreboard {
     const parsedQuizDetailedScoreboardJson = JSON.parse(quizDetailedScoreboardJson);
 
@@ -116,32 +112,31 @@ export class QuestionStatistics {
 
 export class QuizPercentageTimeDetailedScoreboard {
 
+  private readonly quizName: string;
   private readonly questionPercentageTimeStatistics: QuestionPercentageTimeStatistics[];
-  private readonly quizScore: QuizScore;
 
-  private constructor(questionPercentageTimeStatistics: QuestionPercentageTimeStatistics[], quizScore: QuizScore) {
+  private constructor(quizName: string, questionPercentageTimeStatistics: QuestionPercentageTimeStatistics[]) {
+    this.quizName = quizName;
     this.questionPercentageTimeStatistics = questionPercentageTimeStatistics;
-    this.quizScore = quizScore;
   }
 
-  public static fromQuizDetailedScoreboard(quizDetailedScoreboard: QuizDetailedScoreboard) {
+  public static fromQuizQuestionWithAnswersAndTime(quizName: string, questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime[]) {
     const questionPercentageTimeStatistic: QuestionPercentageTimeStatistics[] =
-        QuizPercentageTimeDetailedScoreboard.mapQuestionPercentageTimeStatistics(quizDetailedScoreboard.getQuestionsStatistics());
-    const quizScore: QuizScore = quizDetailedScoreboard.getQuizScore();
+        QuizPercentageTimeDetailedScoreboard.mapQuestionsListWithUserAnswers(questionsListWithUserAnswers);
 
-    return new QuizPercentageTimeDetailedScoreboard(questionPercentageTimeStatistic, quizScore);
+    return new QuizPercentageTimeDetailedScoreboard(quizName, questionPercentageTimeStatistic);
   }
 
-  private static mapQuestionPercentageTimeStatistics(questionsStatistics: QuestionStatistics[]): QuestionPercentageTimeStatistics[] {
-    const whileTime: number = QuizPercentageTimeDetailedScoreboard.calculateWhileTime(questionsStatistics);
+  private static mapQuestionsListWithUserAnswers(questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime[]): QuestionPercentageTimeStatistics[] {
+    const wholeTime: number = QuizPercentageTimeDetailedScoreboard.calculateWholeTime(questionsListWithUserAnswers);
 
-    return questionsStatistics
-      .map(questionsStatistic => QuestionPercentageTimeStatistics.fromQuestionStatistics(questionsStatistic, whileTime));
+    return questionsListWithUserAnswers
+      .map(questionsListWithUserAnswer => QuestionPercentageTimeStatistics.fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswer, wholeTime));
   }
 
-  private static calculateWhileTime(questionsStatistics: QuestionStatistics[]): number {
-    return questionsStatistics
-      .map(questionsStatistic => questionsStatistic.getAnswerTime())
+  private static calculateWholeTime(questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime[]): number {
+    return questionsListWithUserAnswers
+      .map(questionsListWithUserAnswer => questionsListWithUserAnswer.getUserAnswerTime())
       .reduce((value, sum) => sum + value);
   }
 
@@ -153,29 +148,27 @@ export class QuizPercentageTimeDetailedScoreboard {
 
 
 export class QuestionPercentageTimeStatistics {
-  private readonly isAnswerCorrectFlag: boolean;
-  private readonly timePenalty: number;
+
+  private readonly answer: number;
   private readonly timeSpendPercentage: number;
 
-  private constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendPercentage: number) {
-    this.isAnswerCorrectFlag = isAnswerCorrect;
-    this.timePenalty = timePenalty;
+  private constructor( answer: number, timeSpendPercentage: number) {
+    this.answer = answer;
     this.timeSpendPercentage = timeSpendPercentage;
   }
 
-  public static fromQuestionStatistics(questionStatistics: QuestionStatistics, wholeTime: number) {
+  public static fromQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime, wholeTime: number) {
+    const userAnswer: number = questionsListWithUserAnswers.getUserAnswer();
     const timeSpendPercentage: number = QuestionPercentageTimeStatistics
-      .calculateTimeSpendPercentage(questionStatistics.getAnswerTime(), wholeTime);
+      .calculateTimeSpendPercentage(questionsListWithUserAnswers.getUserAnswerTime(), wholeTime);
 
-    return new QuestionPercentageTimeStatistics(
-        questionStatistics.isAnswerCorrect(),
-        questionStatistics.getTimePenalty(),
-        timeSpendPercentage);
+    return new QuestionPercentageTimeStatistics(userAnswer, timeSpendPercentage);
   }
 
   private static calculateTimeSpendPercentage(timeSpendInSeconds: number, wholeTime: number): number {
     return timeSpendInSeconds * 100 / wholeTime;
   }
+
 }
 
 

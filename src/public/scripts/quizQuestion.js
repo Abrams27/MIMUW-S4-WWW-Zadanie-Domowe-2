@@ -5,7 +5,6 @@ import { DocumentEditor } from './main/editors/documentEditors.js';
 import { QuizSession } from './main/quizzes/quizSession.js';
 import { CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch } from './main/editors/quizQuestionEditors.js';
 import { QuizQuestionProperties } from './main/properties/quizQuestionProperties.js';
-import { QuizPercentageTimeDetailedScoreboard } from './main/scoreboards/scoreboard.js';
 import { HttpClient } from './main/httpclient/httpClient.js';
 const httpClient = new HttpClient();
 const documentEditor = DocumentEditor.fromDocument(document);
@@ -57,8 +56,7 @@ function navigationBackButtonClickListener() {
     updateButtonsVisibilityIfNeededAndUpdatePage();
 }
 function navigationStopButtonClickListener() {
-    const quizDetaildedScoreboard = quizSession.getDetailedScoreboard();
-    const quizPercentageTimeDetailedScoreboard = QuizPercentageTimeDetailedScoreboard.fromQuizDetailedScoreboard(quizDetaildedScoreboard);
+    const quizPercentageTimeDetailedScoreboard = quizSession.getQuizPercentageTimeDetailedScoreboard();
     const quizPercentageTimeDetailedScoreboardJson = quizPercentageTimeDetailedScoreboard.toJson();
     // todo obsluga?
     httpClient.postQuizResults(quiz.getName(), quizPercentageTimeDetailedScoreboardJson, crsfCookie)
