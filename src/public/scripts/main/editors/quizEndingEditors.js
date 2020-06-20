@@ -1,6 +1,6 @@
-import { HTMLElementEditor, QuizScoreboardTableEditor } from "./documentEditors.js";
-import { QuizEndingProperties } from "../properties/quizEndingProperties.js";
-import { Utils } from "../utils/utils.js";
+import { HTMLElementEditor, QuizScoreboardTableEditor } from './documentEditors.js';
+import { QuizEndingProperties } from '../properties/quizEndingProperties.js';
+import { Utils } from '../utils/utils.js';
 export class QuizEndingPageEditor {
     constructor(document, detailedScoreboard) {
         this.detailedScoreboard = detailedScoreboard;
@@ -34,6 +34,6 @@ export class QuizEndingPageEditor {
         const answerTime = questionStatistics.getAnswerTime();
         const timePenalty = questionStatistics.getTimePenalty();
         this.quizDetailsStatsTableEditor
-            .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, answerTime, timePenalty);
+            .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, 1, answerTime, timePenalty, 2);
     }
 }

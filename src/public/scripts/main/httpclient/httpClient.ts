@@ -1,5 +1,3 @@
-
-
 export class HttpClient {
 
   private host: string = 'http://localhost:3000';
@@ -27,17 +25,22 @@ export class HttpClient {
   }
 
   public postQuizResults(quizName: string, quizResults: string, csrfToken: string): Promise<any> {
-    console.log(quizName);
-    console.log(quizResults);
     return fetch(this.getUrl(`/api/quiz/name/${quizName}`), {
       method: 'POST',
       body: quizResults,
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+        'Content-Type': 'application/json',
         'X-CSRF-Token': csrfToken
       }
     });
     // .then(response => if);
+  }
+
+  public async getQuizStatistics(): Promise<string> {
+    const fetchResult: string = await fetch(this.getUrl('/api/quiz/result/xd'))
+      .then(response => response.json());
+
+    return fetchResult;
   }
 
   private getUrl(resource: string): string {

@@ -28,16 +28,18 @@ export class QuizScoreboardTableEditor {
         this.tableElement = this.documentEditor.getElement(tableElementId);
         this.numberOfRows = 0;
     }
-    addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, answerTime, wrongAnswerPenalty) {
+    addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, correctAnswer, answerTime, wrongAnswerPenalty, averageQuestionTime) {
         const newRow = this.tableElement.insertRow();
         this.addQuestionNumberCellToTableRow(newRow);
         this.addAnswerCorrectnessCellToTableRow(newRow, isAnswerCorrect);
+        this.addReallyCorrectAnser(newRow, correctAnswer);
         this.addTimeWithPenaltyIfWrongCellToTAbleRow(newRow, isAnswerCorrect, answerTime, wrongAnswerPenalty);
+        this.addAverageQuestionTime(newRow, averageQuestionTime);
     }
     addQuestionNumberCellToTableRow(tableRow) {
         this.numberOfRows++;
         const formattedQuestionNumberCell = `Pytanie ${this.numberOfRows}:`;
-        this.addCellToTableRow(tableRow, formattedQuestionNumberCell, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_LEFT_ELEMENT_CLASS);
+        this.addCellToTableRow(tableRow, formattedQuestionNumberCell, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
     }
     addAnswerCorrectnessCellToTableRow(tableRow, isAnswerCorrect) {
         if (isAnswerCorrect) {
@@ -48,10 +50,14 @@ export class QuizScoreboardTableEditor {
         }
     }
     addCorrectAnswerCellToTableRow(tableRow) {
-        this.addCellToTableRow(tableRow, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_OK_ANSWER, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_MIDDLE_ELEMENT_OK_CLASS);
+        this.addCellToTableRow(tableRow, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_OK_ANSWER, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ANSWER_ELEMENT_OK_CLASS);
     }
     addIncorrectAnswerCellToTableRow(tableRow) {
-        this.addCellToTableRow(tableRow, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_WA_ANSWER, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_MIDDLE_ELEMENT_WA_CLASS);
+        this.addCellToTableRow(tableRow, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_WA_ANSWER, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ANSWER_ELEMENT_WA_CLASS);
+    }
+    addReallyCorrectAnser(tableRow, correctAnswer) {
+        const formattedCorrectAnswer = `${correctAnswer}`;
+        this.addCellToTableRow(tableRow, formattedCorrectAnswer, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
     }
     addTimeWithPenaltyIfWrongCellToTAbleRow(tableRow, isAnswerCorrect, answerTime, wrongAnswerPenalty) {
         if (isAnswerCorrect) {
@@ -63,13 +69,17 @@ export class QuizScoreboardTableEditor {
     }
     addTimeToTAbleRow(tableRow, answerTime) {
         const formattedTime = Utils.getStringDescriptingTimeInSeconds(answerTime);
-        this.addCellToTableRow(tableRow, formattedTime, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_RIGHT_ELEMENT_CLASS);
+        this.addCellToTableRow(tableRow, formattedTime, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
     }
     addTimeWithPenaltyCellToTAbleRow(tableRow, answerTime, wrongAnswerPenalty) {
         const formattedTime = Utils.getStringDescriptingTimeInSeconds(answerTime);
         const formattedPenaltyTime = Utils.getStringDescriptingTimeInSeconds(wrongAnswerPenalty);
         const formattedTimeWithPenalty = `${formattedTime} (+ ${formattedPenaltyTime})`;
-        this.addCellToTableRow(tableRow, formattedTimeWithPenalty, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_RIGHT_ELEMENT_CLASS);
+        this.addCellToTableRow(tableRow, formattedTimeWithPenalty, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
+    }
+    addAverageQuestionTime(tableRow, averageAnswerTime) {
+        const formattedTime = Utils.getStringDescriptingTimeInSeconds(averageAnswerTime);
+        this.addCellToTableRow(tableRow, formattedTime, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
     }
     addCellToTableRow(tableRow, innerHTML, cellClass) {
         const newCell = tableRow.insertCell();

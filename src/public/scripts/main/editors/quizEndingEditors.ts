@@ -1,7 +1,7 @@
-import {QuestionStatistics, QuizDetailedScoreboard} from "../scoreboards/scoreboard.js";
-import {HTMLElementEditor, QuizScoreboardTableEditor} from "./documentEditors.js";
-import {QuizEndingProperties} from "../properties/quizEndingProperties.js";
-import {Utils} from "../utils/utils.js";
+import {QuestionStatistics, QuizDetailedScoreboard} from '../scoreboards/scoreboard.js';
+import {HTMLElementEditor, QuizScoreboardTableEditor} from './documentEditors.js';
+import {QuizEndingProperties} from '../properties/quizEndingProperties.js';
+import {Utils} from '../utils/utils.js';
 
 export class QuizEndingPageEditor {
 
@@ -52,7 +52,7 @@ export class QuizEndingPageEditor {
     const timePenalty: number = questionStatistics.getTimePenalty();
 
     this.quizDetailsStatsTableEditor
-      .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, answerTime, timePenalty);
+      .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, 1, answerTime, timePenalty, 2);
   }
 
 }

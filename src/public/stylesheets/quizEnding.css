@@ -11,35 +11,14 @@ body {
   grid-row-gap: 10%;
   width: 100%;
 
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr;
   grid-template-rows: auto;
   grid-template-areas:
-      "quiz-ending-header-section             quiz-ending-header-section"
-      "quiz-ending-stats-container            quiz-ending-stats-container"
-      "quiz-ending-stats-details-section      quiz-ending-stats-details-section"
-      "quiz-ending-save-button                quiz-ending-save-with-stats-button"
+      "quiz-ending-header-section"
+      "quiz-ending-stats-container"
+      "quiz-ending-stats-details-section"
+      "quiz-ending-return-button"
 }
-
-@media screen and (max-width: 1100px) {
-
-  .password-change-container {
-    display: inline-grid;
-    grid-column-gap: 16px;
-    grid-row-gap: 10%;
-    width: 100%;
-
-    grid-template-columns: 1fr;
-    grid-template-rows: auto;
-    grid-template-areas:
-        "quiz-ending-header-section"
-        "quiz-ending-stats-container"
-        "quiz-ending-stats-details-section"
-        "quiz-ending-save-button"
-        "quiz-ending-save-with-stats-button"
-  }
-
-}
-
 
 .quiz-ending-header-section {
   grid-area: quiz-ending-header-section;
@@ -90,42 +69,29 @@ body {
   width: 100%;
 }
 
-.quiz-ending-stats-details-table-left-element {
-  width: 40%;
-  text-align: right;
+.quiz-ending-stats-details-table-element {
   padding: 16px;
 }
 
-.quiz-ending-stats-details-table-middle-element-ok {
+.quiz-ending-stats-details-table-answer-element-ok {
   width: 20%;
   text-align: center;
   color: #63a149;
   padding: 16px;
 }
 
-.quiz-ending-stats-details-table-middle-element-wa {
+.quiz-ending-stats-details-table-answer-element-wa {
   width: 20%;
   text-align: center;
   color: #a80014;
   padding: 16px;
 }
 
-.quiz-ending-stats-details-table-right-element {
-  width: 40%;
-  text-align: left;
-  padding: 16px;
+.quiz-ending-return-button {
+  grid-area: quiz-ending-return-button;
 }
 
-
-.quiz-ending-save-button {
-  grid-area: quiz-ending-save-button;
-}
-
-.quiz-ending-save-with-stats-button-section {
-  grid-area: quiz-ending-save-with-stats-button;
-}
-
-.quiz-ending-saving-button {
+.quiz-ending-return-button {
   background-color: #54aabd;
   border: 2px solid #54aabd;
 

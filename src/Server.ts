@@ -28,7 +28,7 @@ app.use(cookieParser());
 app.use(session({
     store: new SQLiteStore(),
     secret: 'pozdrawiamPanaCiebiere42',
-    cookie: { maxAge: 7 * 24 * 60 * 60 * 1000 } // 1 week
+    cookie: { maxAge: 10 * 60 * 1000}
 }));
 
 // Show routes called in console during development

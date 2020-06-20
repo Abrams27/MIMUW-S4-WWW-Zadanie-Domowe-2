@@ -35,17 +35,22 @@ export class HttpClient {
         });
     }
     postQuizResults(quizName, quizResults, csrfToken) {
-        console.log(quizName);
-        console.log(quizResults);
         return fetch(this.getUrl(`/api/quiz/name/${quizName}`), {
             method: 'POST',
             body: quizResults,
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'Content-Type': 'application/json',
                 'X-CSRF-Token': csrfToken
             }
         });
         // .then(response => if);
+    }
+    getQuizStatistics() {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fetchResult = yield fetch(this.getUrl('/api/quiz/result/xd'))
+                .then(response => response.json());
+            return fetchResult;
+        });
     }
     getUrl(resource) {
         return `${this.host}${resource}`;

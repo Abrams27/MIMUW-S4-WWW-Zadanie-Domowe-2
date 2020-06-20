@@ -7,7 +7,7 @@
     "start": "node -r module-alias/register ./dist --env=production",
     "start:dev": "nodemon",
     "test": "nodemon --config ./spec/nodemon.json",
-    "createdb": "npx ts-node createDb.ts"
+    "createdb": "rm persistence/*.db && npx ts-node createDb.ts"
   },
   "nodemonConfig": {
     "watch": [

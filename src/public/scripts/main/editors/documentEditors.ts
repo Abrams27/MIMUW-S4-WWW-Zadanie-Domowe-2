@@ -45,23 +45,26 @@ export class QuizScoreboardTableEditor {
 
   public constructor(document: Document, tableElementId: string) {
     this.documentEditor = DocumentEditor.fromDocument(document);
-    this.tableElement = <HTMLTableElement>this.documentEditor.getElement(tableElementId);
+    this.tableElement = this.documentEditor.getElement(tableElementId) as HTMLTableElement;
     this.numberOfRows = 0;
   }
 
-  public addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect: boolean, answerTime: number, wrongAnswerPenalty: number) {
+  public addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect: boolean, correctAnswer: number, answerTime: number,
+                                                   wrongAnswerPenalty: number, averageQuestionTime: number) {
     const newRow: HTMLTableRowElement = this.tableElement.insertRow();
 
     this.addQuestionNumberCellToTableRow(newRow);
     this.addAnswerCorrectnessCellToTableRow(newRow, isAnswerCorrect);
+    this.addReallyCorrectAnser(newRow, correctAnswer);
     this.addTimeWithPenaltyIfWrongCellToTAbleRow(newRow, isAnswerCorrect, answerTime, wrongAnswerPenalty);
+    this.addAverageQuestionTime(newRow, averageQuestionTime);
   }
 
   private addQuestionNumberCellToTableRow(tableRow: HTMLTableRowElement) {
     this.numberOfRows++;
     const formattedQuestionNumberCell: string = `Pytanie ${this.numberOfRows}:`;
 
-    this.addCellToTableRow(tableRow, formattedQuestionNumberCell, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_LEFT_ELEMENT_CLASS);
+    this.addCellToTableRow(tableRow, formattedQuestionNumberCell, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
   }
 
   private addAnswerCorrectnessCellToTableRow(tableRow: HTMLTableRowElement, isAnswerCorrect: boolean) {
@@ -74,12 +77,18 @@ export class QuizScoreboardTableEditor {
 
   private addCorrectAnswerCellToTableRow(tableRow: HTMLTableRowElement) {
     this.addCellToTableRow(tableRow, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_OK_ANSWER,
-        QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_MIDDLE_ELEMENT_OK_CLASS);
+        QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ANSWER_ELEMENT_OK_CLASS);
   }
 
   private addIncorrectAnswerCellToTableRow(tableRow: HTMLTableRowElement) {
     this.addCellToTableRow(tableRow, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_WA_ANSWER,
-        QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_MIDDLE_ELEMENT_WA_CLASS);
+        QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ANSWER_ELEMENT_WA_CLASS);
+  }
+
+  private addReallyCorrectAnser(tableRow: HTMLTableRowElement, correctAnswer: number) {
+    const formattedCorrectAnswer: string = `${correctAnswer}`;
+
+    this.addCellToTableRow(tableRow, formattedCorrectAnswer, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
   }
 
   private addTimeWithPenaltyIfWrongCellToTAbleRow(tableRow: HTMLTableRowElement, isAnswerCorrect: boolean, answerTime: number, wrongAnswerPenalty: number) {
@@ -93,7 +102,7 @@ export class QuizScoreboardTableEditor {
   private addTimeToTAbleRow(tableRow: HTMLTableRowElement, answerTime: number) {
     const formattedTime: string = Utils.getStringDescriptingTimeInSeconds(answerTime);
 
-    this.addCellToTableRow(tableRow, formattedTime, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_RIGHT_ELEMENT_CLASS);
+    this.addCellToTableRow(tableRow, formattedTime, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
   }
 
   private addTimeWithPenaltyCellToTAbleRow(tableRow: HTMLTableRowElement, answerTime: number, wrongAnswerPenalty: number) {
@@ -101,7 +110,13 @@ export class QuizScoreboardTableEditor {
     const formattedPenaltyTime: string = Utils.getStringDescriptingTimeInSeconds(wrongAnswerPenalty);
     const formattedTimeWithPenalty: string = `${formattedTime} (+ ${formattedPenaltyTime})`;
 
-    this.addCellToTableRow(tableRow, formattedTimeWithPenalty, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_RIGHT_ELEMENT_CLASS);
+    this.addCellToTableRow(tableRow, formattedTimeWithPenalty, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
+  }
+
+  private addAverageQuestionTime(tableRow: HTMLTableRowElement, averageAnswerTime: number) {
+    const formattedTime: string = Utils.getStringDescriptingTimeInSeconds(averageAnswerTime);
+
+    this.addCellToTableRow(tableRow, formattedTime, QuizEndingProperties.QUIZ_ENDING_STATS_DETAILS_TABLE_ELEMENT_CLASS);
   }
 
   private addCellToTableRow(tableRow: HTMLTableRowElement, innerHTML: string, cellClass: string) {
