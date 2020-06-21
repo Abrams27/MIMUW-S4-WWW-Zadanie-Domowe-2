@@ -77,7 +77,6 @@ function quizStatsButtonClickListener() {
 }
 
 function setQuizStatsAndRedirect(quiz: string) {
-  //todo
-  // sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, quiz);
+  sessionStorage.setItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY, chosenQuizStatsQuizName);
   location.href = Properties.QUIZ_ENDING_HTML_FILE;
 }

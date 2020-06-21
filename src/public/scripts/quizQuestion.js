@@ -64,7 +64,7 @@ function navigationStopButtonClickListener() {
 }
 function postQuizResultsAndRedirect(quizDetaildedScoreboardJson) {
     sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
-    sessionStorage.setItem(Properties.QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY, quizDetaildedScoreboardJson);
+    sessionStorage.setItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY, quiz.getName());
     location.href = Properties.QUIZ_ENDING_HTML_FILE;
 }
 function navigationNextButtonClickListener() {

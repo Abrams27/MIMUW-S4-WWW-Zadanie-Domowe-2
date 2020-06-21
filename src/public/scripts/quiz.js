@@ -49,12 +49,9 @@ function quizStatsSelectionFormInputListener(event) {
     chosenQuizStatsQuizName = event.target.value;
 }
 function quizStatsButtonClickListener() {
-    console.log(chosenQuizStatsQuizName);
     setQuizStatsAndRedirect('');
-    // httpClient.getQuizWithName(chosenQuizName)
-    // .then(quiz => setQuizAndRedirect(quiz));
 }
 function setQuizStatsAndRedirect(quiz) {
-    // sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, quiz);
-    // location.href = Properties.QUIZ_ENDING_HTML_FILE;
+    sessionStorage.setItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY, chosenQuizStatsQuizName);
+    location.href = Properties.QUIZ_ENDING_HTML_FILE;
 }
