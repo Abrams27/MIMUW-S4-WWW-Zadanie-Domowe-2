@@ -14,8 +14,11 @@ const selectEditor: SelectEditor =
     new SelectEditor(document, QuizProperties.QUIZ_SELECTION_SELECT_ID);
 const scoreboardTableEditor: ScoreboardTableEditor =
     new ScoreboardTableEditor(document, QuizProperties.QUIZ_SCOREBOARD_TABLE_ID, QuizProperties.QUIZ_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS);
+const statsSelectEditor: SelectEditor =
+    new SelectEditor(document, QuizProperties.QUIZ_STATS_SELECT_ID);
 
 let chosenQuizName: string = '';
+let chosenQuizStatsQuizName: string = '';
 
 httpClient.getQuizzesNamesList()
   .then(quizzesNamesArray => updateChosenQuizAndAddOptions(quizzesNamesArray));
@@ -36,6 +39,8 @@ function mapScoresAndAddRows(scores: number[]) {
   scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores, QuizProperties.QUIZ_SCOREBOARD_TABLE_ELEMENT_CLASS);
 }
 
+statsSelectEditor.addOptions(['xdddd', 'fsfdfs'], QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID);
+
 const quizSelectionForm: HTMLFormElement = documentEditor.getElement(QuizProperties.QUIZ_SELECTION_FORM_ID) as HTMLFormElement;
 quizSelectionForm.addEventListener(Properties.INPUT_TAG, quizSelectionFormInputListener);
 
@@ -54,4 +59,25 @@ function startQuizButtonClickListener() {
 function setQuizAndRedirect(quiz: string) {
   sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, quiz);
   location.href = Properties.QUIZ_QUESTION_HTML_FILE;
+}
+
+
+const quizStatsSelectionForm: HTMLFormElement = documentEditor.getElement(QuizProperties.QUIZ_STATSSELECTION_FORM_ID) as HTMLFormElement;
+quizStatsSelectionForm.addEventListener(Properties.INPUT_TAG, quizStatsSelectionFormInputListener);
+
+const quizStatsButton: HTMLButtonElement = documentEditor.getElement(QuizProperties.QUIZ_STATS_BUTTON_ID) as HTMLButtonElement;
+quizStatsButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizStatsButtonClickListener);
+
+function quizStatsSelectionFormInputListener(event: any) {
+  chosenQuizStatsQuizName = event.target.value;
+}
+
+function quizStatsButtonClickListener() {
+  setQuizStatsAndRedirect('');
+}
+
+function setQuizStatsAndRedirect(quiz: string) {
+  //todo
+  // sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, quiz);
+  location.href = Properties.QUIZ_ENDING_HTML_FILE;
 }
