@@ -1,18 +1,20 @@
 import {Request, Response, Router} from 'express';
 import 'express-session';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
-import {asyncDbAll, asyncDbGet} from '@shared/databaseUtils';
 import {csrfProtectionMiddleware} from '../middlewares/csrf';
 import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from '@shared/scoreboard';
 import {Quiz} from '@shared/quizzes';
+import {databaseService} from '@shared/databaseService';
 
 const router = Router();
 
 
 router.get('/list', async (req: Request, res: Response) => {
   if (req.session) {
-    const all = await asyncDbAll('SELECT id, name FROM quizzes');
-    const solved = await asyncDbAll('SELECT quiz_id FROM scores WHERE user_id = ?', [req.session.user_id]);
+    const userId: number = req.session.user_id;
+
+    const all = await databaseService.getAllQuizzesIdsAndNames();
+    const solved = await databaseService.getSolvedQuizzesIdsByUser(userId);
 
     const unsolvedQuizzes = all.filter(a => solved.find( o => o.quiz_id === a.id) === undefined);
     console.log(req.session.user_id);
@@ -31,8 +33,10 @@ router.get('/list', async (req: Request, res: Response) => {
 
 router.get('/solved', async (req: Request, res: Response) => {
   if (req.session) {
-    const all = await asyncDbAll('SELECT id, name FROM quizzes');
-    const solved = await asyncDbAll('SELECT quiz_id FROM scores WHERE user_id = ?', [req.session.user_id]);
+    const userId: number = req.session.user_id;
+
+    const all = await databaseService.getAllQuizzesIdsAndNames();
+    const solved = await databaseService.getSolvedQuizzesIdsByUser(userId);
 
     const unsolvedQuizzes = all.filter(a => solved.find( o => o.quiz_id === a.id) !== undefined);
     console.log(req.session.user_id);
@@ -49,14 +53,15 @@ router.get('/solved', async (req: Request, res: Response) => {
 });
 
 router.get('/scores', async (req: Request, res: Response) => {
-  const all: number[] = await asyncDbAll('SELECT score FROM scores');
+  const all: number[] = await databaseService.getAllScores();
 
   res.json(all);
   return res.status(OK).end();
 });
 
 router.get('/name/:quizName', async (req: Request, res: Response) => {
-  const all = await asyncDbGet('SELECT quiz FROM quizzes WHERE name = ?', [req.params.quizName]);
+  const quizName: string = req.params.quizName;
+  const all = await databaseService.getQuizWithName(quizName);
 
   res.json(all);
   return res.status(OK).end();
@@ -71,7 +76,9 @@ router.post('/name/:quizName', csrfProtectionMiddleware, async (req: Request, re
       QuizPercentageTimeDetailedScoreboard.copyOf(req.body);
   console.log(quizPercentageTimeDetailedScoreboard);
 
-  const quizJson = await asyncDbGet('SELECT quiz FROM quizzes WHERE name = ?', [quizPercentageTimeDetailedScoreboard.getQuizName()]);
+  const quizName: string = quizPercentageTimeDetailedScoreboard.getQuizName();
+  const quizJson = await databaseService.getQuizWithName(quizName);
+
   console.log(quizJson.quiz);
   console.log(Quiz.fromJson(quizJson.quiz));
   const quiz = Quiz.fromJson(quizJson.quiz);

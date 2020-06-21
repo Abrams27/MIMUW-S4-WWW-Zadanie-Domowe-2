@@ -47,7 +47,6 @@ function removeUserAnswer() {
 }
 function cancelButtonClickListener() {
     sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
-    // todo tutaj tez cos!!!
     location.href = Properties.QUIZ_HTML_FILE;
 }
 function navigationBackButtonClickListener() {

@@ -31,7 +31,6 @@ function mapScoresAndAddRows(scores) {
         .sort((a, b) => a.compare(b));
     scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores, QuizProperties.QUIZ_SCOREBOARD_TABLE_ELEMENT_CLASS);
 }
-statsSelectEditor.addOptions(['xdddd', 'fsfdfs'], QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID);
 const quizSelectionForm = documentEditor.getElement(QuizProperties.QUIZ_SELECTION_FORM_ID);
 quizSelectionForm.addEventListener(Properties.INPUT_TAG, quizSelectionFormInputListener);
 const startQuizButton = documentEditor.getElement(QuizProperties.START_QUIZ_BUTTON_ID);

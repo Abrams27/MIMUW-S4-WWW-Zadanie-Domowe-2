@@ -1,9 +1,9 @@
 import {NextFunction, Request, Response, Router} from 'express';
 import 'express-session';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
-import {asyncDbGet, asyncDbRun} from '@shared/databaseUtils';
 import {comparePasswordWithHash, hashPassword} from '@shared/hashUtils';
 import {csrfProtectionMiddleware} from '../middlewares/csrf';
+import {databaseService} from '@shared/databaseService';
 
 const router = Router();
 
@@ -32,7 +32,7 @@ router.post('/login', csrfProtectionMiddleware, async (req: Request, res: Respon
 });
 
 async function loginUser(req: Request, username: string, password: string): Promise<boolean> {
-  const user = await getUserWithName(username);
+  const user = await databaseService.getUserWithName(username);
 
   if (user !== undefined) {
     const correctUser: UserRoute = user as UserRoute;
@@ -46,9 +46,6 @@ async function loginUser(req: Request, username: string, password: string): Prom
   return false;
 }
 
-async function getUserWithName(username: string): Promise<any> {
-  return await asyncDbGet('SELECT * FROM users WHERE username = ?', [username]);
-}
 
 function loginCorrectUser(req: Request, user: UserRoute): boolean {
   if (req.session !== undefined) {
@@ -79,7 +76,7 @@ router.get('/logout', async (req: Request, res: Response) => {
 async function isUserLoggedMiddleware(req: Request, res: Response, next: NextFunction) {
   if (req.session !== undefined && req.session.username !== undefined) {
     const username: string = req.session.username;
-    const user: any = await getUserWithName(username);
+    const user: any = await databaseService.getUserWithName(username);
 
     if (user !== undefined) {
       const correctUser: UserRoute = user as UserRoute;
@@ -118,7 +115,7 @@ router.post('/change', csrfProtectionMiddleware, isUserLoggedMiddleware, async (
 });
 
 async function changeUserPassword(req: Request, username: string, oldPassword: string, newPassword: string, newPasswordConfirmation: string): Promise<boolean> {
-  const user = await getUserWithName(username);
+  const user = await databaseService.getUserWithName(username);
 
   if (newPassword === newPasswordConfirmation && user !== undefined) {
     const correctUser: UserRoute = user as UserRoute;
@@ -141,8 +138,7 @@ async function updateUserPasswordAndPasswordGeneration(user: UserRoute, newPassw
   const newPasswordGeneration: number = user.password_generation + 1;
   const username: string = user.username;
 
-  await asyncDbRun('UPDATE users SET password_hash = ?, password_generation = ? WHERE username = ?',
-      [hashedNewPassword, newPasswordGeneration, username]);
+  await databaseService.updateUserPassword(username, hashedNewPassword, newPasswordGeneration);
 }
 
 export default router;
