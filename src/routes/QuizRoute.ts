@@ -28,6 +28,26 @@ router.get('/list', async (req: Request, res: Response) => {
   return res.status(UNAUTHORIZED).end();
 });
 
+
+router.get('/solved', async (req: Request, res: Response) => {
+  if (req.session) {
+    const all = await asyncDbAll('SELECT id, name FROM quizzes');
+    const solved = await asyncDbAll('SELECT quiz_id FROM scores WHERE user_id = ?', [req.session.user_id]);
+
+    const unsolvedQuizzes = all.filter(a => solved.find( o => o.quiz_id === a.id) !== undefined);
+    console.log(req.session.user_id);
+    console.log(all);
+    console.log(solved);
+    console.log(unsolvedQuizzes);
+
+
+    res.json(unsolvedQuizzes);
+    return res.status(OK).end();
+  }
+
+  return res.status(UNAUTHORIZED).end();
+});
+
 router.get('/scores', async (req: Request, res: Response) => {
   const all: number[] = await asyncDbAll('SELECT score FROM scores');
 

@@ -28,6 +28,13 @@ function updateChosenQuizAndAddOptions(quizzesNames: string[]) {
   selectEditor.addOptions(quizzesNames, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID)
 }
 
+httpClient.getSolvedQuizzesNamesList()
+  .then(quizzesNamesArray => updateChosenQuizStatsAndAddOptions(quizzesNamesArray));
+
+function updateChosenQuizStatsAndAddOptions(quizzesNames: string[]) {
+  chosenQuizStatsQuizName = quizzesNames[0] !== undefined ? quizzesNames[0] : '';
+  statsSelectEditor.addOptions(quizzesNames, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID)
+}
 httpClient.getTopScores()
   .then(result => mapScoresAndAddRows(result));
 
@@ -38,8 +45,6 @@ function mapScoresAndAddRows(scores: number[]) {
 
   scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores, QuizProperties.QUIZ_SCOREBOARD_TABLE_ELEMENT_CLASS);
 }
-
-statsSelectEditor.addOptions(['xdddd', 'fsfdfs'], QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID);
 
 const quizSelectionForm: HTMLFormElement = documentEditor.getElement(QuizProperties.QUIZ_SELECTION_FORM_ID) as HTMLFormElement;
 quizSelectionForm.addEventListener(Properties.INPUT_TAG, quizSelectionFormInputListener);

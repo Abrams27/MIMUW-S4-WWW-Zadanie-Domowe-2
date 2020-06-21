@@ -17,6 +17,12 @@ function updateChosenQuizAndAddOptions(quizzesNames) {
     chosenQuizName = quizzesNames[0] !== undefined ? quizzesNames[0] : '';
     selectEditor.addOptions(quizzesNames, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID);
 }
+httpClient.getSolvedQuizzesNamesList()
+    .then(quizzesNamesArray => updateChosenQuizStatsAndAddOptions(quizzesNamesArray));
+function updateChosenQuizStatsAndAddOptions(quizzesNames) {
+    chosenQuizStatsQuizName = quizzesNames[0] !== undefined ? quizzesNames[0] : '';
+    statsSelectEditor.addOptions(quizzesNames, QuizProperties.QUIZ_SELECTION_SELECT_OPTION_ID);
+}
 httpClient.getTopScores()
     .then(result => mapScoresAndAddRows(result));
 function mapScoresAndAddRows(scores) {

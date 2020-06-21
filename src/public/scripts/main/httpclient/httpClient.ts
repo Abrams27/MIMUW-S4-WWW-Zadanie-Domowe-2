@@ -10,6 +10,14 @@ export class HttpClient {
       .map(element => element.name);
   }
 
+  public async getSolvedQuizzesNamesList(): Promise<string[]> {
+    const fetchResult: any[] = await fetch(this.getUrl('/api/quiz/solved'))
+    .then(response => response.json());
+
+    return fetchResult
+    .map(element => element.name);
+  }
+
   public async getQuizWithName(quizName: string): Promise<string> {
     return  await fetch(this.getUrl(`/api/quiz/name/${quizName}`))
       .then(response => response.json())
