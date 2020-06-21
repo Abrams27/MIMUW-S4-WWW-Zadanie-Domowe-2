@@ -1,7 +1,7 @@
-import {Utils} from "../utils/utils.js";
-import {DocumentEditor} from "./documentEditors.js";
-import {QuizScore} from "../scoreboards/scoreboard.js";
-import {QuizProperties} from "../properties/quizProperties.js";
+import {Utils} from '../utils/utils.js';
+import {DocumentEditor} from './documentEditors.js';
+import {QuizScore} from '../scoreboards/scoreboard.js';
+import {QuizProperties} from '../properties/quizProperties.js';
 
 export class ScoreboardTableEditor {
 
@@ -11,21 +11,21 @@ export class ScoreboardTableEditor {
 
   public constructor(document: Document, tableElementId: string, numberOfRowsToDisplay: number) {
     this.documentEditor = DocumentEditor.fromDocument(document);
-    this.tableElement = <HTMLTableElement>this.documentEditor.getElement(tableElementId);
+    this.tableElement = (this.documentEditor.getElement(tableElementId) as HTMLTableElement);
     this.numberOfRowsToDisplay = numberOfRowsToDisplay;
   }
 
-  public addRowsWithScoresInGivenOrder(scoresArray: QuizScore[]) {
+  public addRowsWithScoresInGivenOrder(scoresArray: QuizScore[], className: string) {
     scoresArray
       .slice(0, this.numberOfRowsToDisplay)
-      .forEach(score => this.addRowWithScore(score));
+      .forEach(score => this.addRowWithScore(score, className));
   }
 
-  private addRowWithScore(score: QuizScore) {
+  private addRowWithScore(score: QuizScore, className: string) {
     const newRow: HTMLTableRowElement = this.tableElement.insertRow();
     const formattedScore: string = Utils.getStringDescriptingTimeInSeconds(score.getScore());
 
-    this.addCellToTableRow(newRow, formattedScore, QuizProperties.QUIZ_SCOREBOARD_TABLE_ELEMENT_CLASS);
+    this.addCellToTableRow(newRow, formattedScore, className);
   }
 
   private addCellToTableRow(tableRow: HTMLTableRowElement, innerHTML: string, cellClass: string) {

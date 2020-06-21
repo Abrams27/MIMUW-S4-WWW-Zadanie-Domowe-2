@@ -33,7 +33,7 @@ function mapScoresAndAddRows(scores: number[]) {
     .map(o => new QuizScore(o))
     .sort((a, b) => a.compare(b));
 
-  scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores);
+  scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores, QuizProperties.QUIZ_SCOREBOARD_TABLE_ELEMENT_CLASS);
 }
 
 const quizSelectionForm: HTMLFormElement = documentEditor.getElement(QuizProperties.QUIZ_SELECTION_FORM_ID) as HTMLFormElement;

@@ -17,6 +17,7 @@ body {
       "quiz-ending-header-section"
       "quiz-ending-stats-container"
       "quiz-ending-stats-details-section"
+      "quiz-ending-top-scores-section"
       "quiz-ending-return-button"
 }
 
@@ -89,6 +90,19 @@ body {
 
 .quiz-ending-return-button {
   grid-area: quiz-ending-return-button;
+}
+
+.quiz-ending-top-scores-section {
+  grid-area: quiz-ending-top-scores-section;
+}
+
+#quiz-ending-top-scores-table {
+ width: 100%;
+}
+
+.quiz-ending-top-scores-table-element {
+  text-align: center;
+  padding: 16px;
 }
 
 .quiz-ending-return-button {
