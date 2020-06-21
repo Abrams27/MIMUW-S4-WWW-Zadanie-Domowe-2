@@ -5,6 +5,7 @@ import {QuizEndingPageEditor} from './main/editors/quizEndingEditors.js';
 import {DocumentEditor} from './main/editors/documentEditors.js';
 import {HttpClient} from './main/httpclient/httpClient.js';
 import {ScoreboardTableEditor} from './main/editors/quizEditors.js';
+import {Utils} from './main/utils/utils.js';
 
 const documentEditor: DocumentEditor = DocumentEditor.fromDocument(document);
 const httpClient: HttpClient = new HttpClient();
@@ -12,12 +13,13 @@ const httpClient: HttpClient = new HttpClient();
 const scoreboardTableEditor: ScoreboardTableEditor =
     new ScoreboardTableEditor(document, QuizEndingProperties.QUIZ_ENDING_SCOREBOARD_TABLE_ID, QuizEndingProperties.QUIZ_ENDING_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS);
 
-console.log(sessionStorage.getItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY));
+const nullableQuizName: string | null = sessionStorage.getItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY);
+const quizName: string = Utils.getStringOrThrowError(nullableQuizName, 'invalid session storage key');
 // const nullableDetailedScoreboardJson: string | null = sessionStorage.getItem(Properties.QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY);
 // const detailedScoreboardJson: string = Utils.getStringOrThrowError(nullableDetailedScoreboardJson, 'invalid session storage key');
 // const detailedScoreboard: QuizDetailedScoreboard = QuizDetailedScoreboard.fromJson(detailedScoreboardJson);
 
-httpClient.getQuizStatistics()
+httpClient.getQuizStatistics(quizName)
 .then(o => {
   const detailedScoreboard: QuizDetailedScoreboard = QuizDetailedScoreboard.fromJson(o);
   const quizEndingPageUpdater: QuizEndingPageEditor = new QuizEndingPageEditor(document, detailedScoreboard);

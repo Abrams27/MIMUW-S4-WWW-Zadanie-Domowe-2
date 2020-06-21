@@ -1,5 +1,6 @@
 import {asyncDbAll, asyncDbGet, asyncDbRun} from '@shared/databaseUtils';
 import sqlite3 from 'sqlite3';
+import {error} from 'winston';
 
 class DatabaseService {
 
@@ -31,6 +32,17 @@ class DatabaseService {
     return asyncDbGet(this.database, 'SELECT quiz FROM quizzes WHERE name = ?', [quizName]);
   }
 
+  public async getQuizIdWithName(quizName: string): Promise<any> {
+    return asyncDbGet(this.database, 'SELECT id FROM quizzes WHERE name = ?', [quizName]);
+  }
+
+  public async saveQuizScore(quizId: number, userId: number, quizScore: number, quizStats: string): Promise<void> {
+    return asyncDbRun(this.database, 'INSERT INTO scores VALUES (4, ?, ?, ?, ?)', [quizId, quizScore, userId, quizStats])
+  }
+
+  public async getUserQuizScore(quizId: number, userId: number): Promise<any> {
+    return asyncDbGet(this.database, 'SELECT stats FROM scores WHERE quiz_id = ? AND user_id = ?', [quizId, userId]);
+  }
 }
 
 export const databaseService: DatabaseService = new DatabaseService();

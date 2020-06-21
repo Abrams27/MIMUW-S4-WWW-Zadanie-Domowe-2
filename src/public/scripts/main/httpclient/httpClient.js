@@ -43,7 +43,7 @@ export class HttpClient {
         });
     }
     postQuizResults(quizName, quizResults, csrfToken) {
-        return fetch(this.getUrl(`/api/quiz/name/${quizName}`), {
+        return fetch(this.getUrl(`/api/quiz/result/${quizName}`), {
             method: 'POST',
             body: quizResults,
             headers: {
@@ -53,9 +53,9 @@ export class HttpClient {
         });
         // .then(response => if);
     }
-    getQuizStatistics() {
+    getQuizStatistics(quizName) {
         return __awaiter(this, void 0, void 0, function* () {
-            const fetchResult = yield fetch(this.getUrl('/api/quiz/result/xd'))
+            const fetchResult = yield fetch(this.getUrl(`/api/quiz/result/${quizName}`))
                 .then(response => response.json());
             return fetchResult;
         });

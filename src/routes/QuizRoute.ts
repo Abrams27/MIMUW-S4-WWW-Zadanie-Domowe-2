@@ -8,7 +8,6 @@ import {databaseService} from '@shared/databaseService';
 
 const router = Router();
 
-
 router.get('/list', async (req: Request, res: Response) => {
   if (req.session) {
     const userId: number = req.session.user_id;
@@ -60,41 +59,67 @@ router.get('/scores', async (req: Request, res: Response) => {
 });
 
 router.get('/name/:quizName', async (req: Request, res: Response) => {
-  const quizName: string = req.params.quizName;
-  const all = await databaseService.getQuizWithName(quizName);
+  if (req.session) {
+    const quizName: string = req.params.quizName;
 
-  res.json(all);
-  return res.status(OK).end();
+    const all = await databaseService.getQuizWithName(quizName);
+
+    req.session.start_timestamp = Date.now().valueOf();
+
+    res.json(all);
+    return res.status(OK).end();
+  }
+
+  return res.status(UNAUTHORIZED).end();
 });
 
-let xd: QuizDetailedScoreboard;
-router.post('/name/:quizName', csrfProtectionMiddleware, async (req: Request, res: Response) => {
-  console.log(req.session!.username);
-  console.log(req.session!.user_id);
-  console.log(req.body.quizName);
-  const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard =
-      QuizPercentageTimeDetailedScoreboard.copyOf(req.body);
-  console.log(quizPercentageTimeDetailedScoreboard);
+router.post('/result/:quizName', csrfProtectionMiddleware, async (req: Request, res: Response) => {
+  if (req.session) {
+    const userId = req.session.user_id;
+    const answerTime = Date.now().valueOf() - req.session.start_timestamp;
 
-  const quizName: string = quizPercentageTimeDetailedScoreboard.getQuizName();
-  const quizJson = await databaseService.getQuizWithName(quizName);
+    const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard = QuizPercentageTimeDetailedScoreboard.copyOf(req.body);
+    const quizName: string = quizPercentageTimeDetailedScoreboard.getQuizName();
+    const quizJson = await databaseService.getQuizWithName(quizName);
+    const quiz = Quiz.fromJson(quizJson.quiz);
 
-  console.log(quizJson.quiz);
-  console.log(Quiz.fromJson(quizJson.quiz));
-  const quiz = Quiz.fromJson(quizJson.quiz);
-  console.log(QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, 5));
-  xd = QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, 5);
+    const quizDetailedScoreboard: QuizDetailedScoreboard =
+        QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, answerTime);
 
-  return res.status(OK).end();
+    console.log(quizDetailedScoreboard);
+    const quizId = await databaseService.getQuizIdWithName(quizName);
+    console.log(quizId.id);
+    console.log(userId);
+    console.log(quizDetailedScoreboard.getQuizScore().getScore());
+
+    await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
+
+    return res.status(OK).end();
+  }
+
+  return res.status(UNAUTHORIZED).end();
 });
 
 router.get('/result/:quizName', async (req: Request, res: Response) => {
-  // const all = await asyncDbGet('SELECT quiz FROM quizzes WHERE name = ?', [req.params.quizName]);
-  console.log(req.session!.username);
-  console.log(req.session!.user_id);
+  if (req.session) {
 
-  res.json(JSON.stringify(xd));
-  return res.status(OK).end();
+    const userId: number = req.session.user_id;
+    const quizName: string = req.params.quizName;
+
+    console.log(quizName);
+    const quizId = await databaseService.getQuizIdWithName(quizName);
+    console.log(quizId);
+    const userQuizScoreJson = await databaseService.getUserQuizScore(quizId.id, userId);
+
+    console.log(userQuizScoreJson);
+    const quizDetailedScoreboard: QuizDetailedScoreboard =
+        QuizDetailedScoreboard.fromJson(userQuizScoreJson.stats);
+
+    res.json(quizDetailedScoreboard.toJson());
+    return res.status(OK).end();
+  }
+
+  return res.status(UNAUTHORIZED).end();
 });
 
 export default router;

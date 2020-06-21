@@ -33,7 +33,7 @@ export class HttpClient {
   }
 
   public postQuizResults(quizName: string, quizResults: string, csrfToken: string): Promise<any> {
-    return fetch(this.getUrl(`/api/quiz/name/${quizName}`), {
+    return fetch(this.getUrl(`/api/quiz/result/${quizName}`), {
       method: 'POST',
       body: quizResults,
       headers: {
@@ -44,8 +44,8 @@ export class HttpClient {
     // .then(response => if);
   }
 
-  public async getQuizStatistics(): Promise<string> {
-    const fetchResult: string = await fetch(this.getUrl('/api/quiz/result/xd'))
+  public async getQuizStatistics(quizName: string): Promise<string> {
+    const fetchResult: string = await fetch(this.getUrl(`/api/quiz/result/${quizName}`))
       .then(response => response.json());
 
     return fetchResult;

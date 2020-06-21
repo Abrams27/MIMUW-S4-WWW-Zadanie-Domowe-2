@@ -42,7 +42,8 @@ export class QuizDetailedScoreboard {
       .map( o => new QuestionStatistics(
           this.isAnswerCorrect(questionPercentageTimeStatistics[o].getAnswer(), questionsWithAnswers[o].answer),
           questionsWithAnswers[o].wrongAnswerPenalty,
-          this.getAnswerTime(questionPercentageTimeStatistics[o].getTimeSpendPercentage(), answersTime)));
+          this.getAnswerTime(questionPercentageTimeStatistics[o].getTimeSpendPercentage(), answersTime),
+          questionsWithAnswers[o].answer));
 
   }
 
@@ -100,30 +101,25 @@ export class QuestionStatistics {
   private readonly isAnswerCorrectFlag: boolean;
   private readonly timePenalty: number;
   private readonly timeSpendInSeconds: number;
+  private readonly correctAnswer: number;
 
-  public constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendInSeconds: number) {
+  public constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendInSeconds: number, correctAnswer: number) {
     this.isAnswerCorrectFlag = isAnswerCorrect;
     this.timePenalty = timePenalty;
     this.timeSpendInSeconds = timeSpendInSeconds;
+    this.correctAnswer = correctAnswer;
   }
 
   public static copyOf(questionStatistics: QuestionStatistics): QuestionStatistics {
     return new QuestionStatistics(
         questionStatistics.isAnswerCorrectFlag,
         questionStatistics.timePenalty,
-        questionStatistics.timeSpendInSeconds);
+        questionStatistics.timeSpendInSeconds,
+        questionStatistics.correctAnswer);
   }
 
   public isAnswerCorrect(): boolean {
     return this.isAnswerCorrectFlag;
-  }
-
-  public getAnswerTime(): number {
-    return this.timeSpendInSeconds;
-  }
-
-  public getTimePenalty(): number {
-    return this.timePenalty;
   }
 
   public getTimeWithPenalty(): number {
@@ -241,7 +237,7 @@ class QuizQuestionWithAnswersAndTimeMapper {
     const wrongAnswerPenalty: number = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
     const answerTimeInSeconds: number = quizQuestionWithAnswersAndTime.getUserAnswerTime();
 
-    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds);
+    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, 1);
   }
 
 }
