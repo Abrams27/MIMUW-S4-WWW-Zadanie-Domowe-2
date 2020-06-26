@@ -13,6 +13,7 @@ let QuizEndingProperties = /** @class */ (() => {
     QuizEndingProperties.QUIZ_ENDING_SCOREBOARD_TABLE_CLASS = 'quiz-ending-top-scores-table-element';
     QuizEndingProperties.QUIZ_ENDING_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS = 5;
     QuizEndingProperties.QUIZ_ENDING_RETURN_BUTTON = 'quiz-ending-return-button';
+    QuizEndingProperties.QUIZ_ENDING_LOGOUT_BUTTON_ID = 'quiz-ending-logout-button';
     return QuizEndingProperties;
 })();
 export { QuizEndingProperties };

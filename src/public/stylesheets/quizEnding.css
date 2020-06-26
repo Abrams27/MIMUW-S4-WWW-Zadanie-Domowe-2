@@ -29,12 +29,35 @@ body {
   padding: 16px;
 
   color: #ffffff;
+  display: inline-grid;
+  grid-row-gap: 10%;
+
+  grid-template-columns: 5fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+      "password-change-header-text quiz-ending-logout-button"
+
 }
 
 .password-change-header-text {
+  grid-area: password-change-header-text;
+
   font-weight: bolder;
   font-size: 200%;
   text-align: left;
+}
+
+#quiz-ending-logout-button {
+  grid-area: quiz-ending-logout-button;
+
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+
+  color: #54aabd;
+  font-size: 100%;
+  width: 70%;
+
+  padding: 16px;
 }
 
 
@@ -114,4 +137,27 @@ body {
 
   padding: 16px;
   width: 50%;
+}
+
+@media screen and (max-width: 1100px) {
+
+  .quiz-ending-header-section {
+    grid-area: quiz-ending-header-section;
+
+    background-color: #54aabd;
+    width: 100%;
+    padding: 16px;
+
+    color: #ffffff;
+    display: inline-grid;
+    grid-row-gap: 10%;
+
+    grid-template-columns: 1fr;
+    grid-template-rows: auto;
+    grid-template-areas:
+        "password-change-header-text"
+        "quiz-ending-logout-button"
+
+  }
+
 }

@@ -46,17 +46,19 @@ function setQuizAndRedirect(quiz) {
     sessionStorage.setItem(Properties.QUIZ_SESSION_STORAGE_KEY, quiz);
     location.href = Properties.QUIZ_QUESTION_HTML_FILE;
 }
-const quizStatsSelectionForm = documentEditor.getElement(QuizProperties.QUIZ_STATSSELECTION_FORM_ID);
+const quizStatsSelectionForm = documentEditor.getElement(QuizProperties.QUIZ_STATS_SELECTION_FORM_ID);
 quizStatsSelectionForm.addEventListener(Properties.INPUT_TAG, quizStatsSelectionFormInputListener);
 const quizStatsButton = documentEditor.getElement(QuizProperties.QUIZ_STATS_BUTTON_ID);
 quizStatsButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizStatsButtonClickListener);
+const quizLogoutButton = documentEditor.getElement(QuizProperties.QUIZ_LOGOUT_BUTTON_ID);
+quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
 function quizStatsSelectionFormInputListener(event) {
     chosenQuizStatsQuizName = event.target.value;
 }
 function quizStatsButtonClickListener() {
-    setQuizStatsAndRedirect('');
-}
-function setQuizStatsAndRedirect(quiz) {
     sessionStorage.setItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY, chosenQuizStatsQuizName);
     location.href = Properties.QUIZ_ENDING_HTML_FILE;
+}
+function quizLogoutButtonClickListener() {
+    location.href = Properties.QUIZ_LOGOUT_HTML_FILE;
 }

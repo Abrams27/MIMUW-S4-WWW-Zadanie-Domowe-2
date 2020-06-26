@@ -48,18 +48,43 @@ body {
   padding: 16px;
 
   color: #ffffff;
+
+  display: inline-grid;
+  grid-row-gap: 10%;
+
+  grid-template-columns: 4fr 1fr 1fr;
+  grid-template-rows: auto;
+  grid-template-areas:
+      "password-change-header-text    password-change-header-text   ."
+      "quiz-header-subtext            quiz-header-subtext           quiz-header-logout-button"
 }
 
 .password-change-header-text {
+  grid-area: password-change-header-text;
+
   font-weight: bolder;
   font-size: 500%;
 }
 
 .quiz-header-subtext {
+  grid-area: quiz-header-subtext;
+
   font-weight: lighter;
   font-size: 120%;
 }
 
+#quiz-header-logout-button {
+  grid-area: quiz-header-logout-button;
+
+  background-color: #ffffff;
+  border: 2px solid #ffffff;
+
+  color: #54aabd;
+  font-size: 100%;
+  width: 70%;
+
+  padding: 16px;
+}
 
 .quiz-selection-section {
   grid-area: quiz-selection-section;

@@ -4,6 +4,7 @@ let Properties = /** @class */ (() => {
     Properties.QUIZ_HTML_FILE = '/static/quiz.html';
     Properties.QUIZ_QUESTION_HTML_FILE = 'quizQuestion.html';
     Properties.QUIZ_ENDING_HTML_FILE = 'quizEnding.html';
+    Properties.QUIZ_LOGOUT_HTML_FILE = 'logout.html';
     Properties.QUIZ_SESSION_STORAGE_KEY = 'quiz';
     Properties.QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY = 'detailed-scoreboard';
     Properties.QUIZ_NAME_SESSION_STORAGE_KEY = 'quiz-name';

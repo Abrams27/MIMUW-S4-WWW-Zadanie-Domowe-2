@@ -3,6 +3,7 @@ export class Properties {
   public static QUIZ_HTML_FILE: string = '/static/quiz.html';
   public static QUIZ_QUESTION_HTML_FILE: string = 'quizQuestion.html';
   public static QUIZ_ENDING_HTML_FILE: string = 'quizEnding.html';
+  public static QUIZ_LOGOUT_HTML_FILE: string = 'logout.html';
 
   public static QUIZ_SESSION_STORAGE_KEY: string = 'quiz';
   public static QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY = 'detailed-scoreboard';

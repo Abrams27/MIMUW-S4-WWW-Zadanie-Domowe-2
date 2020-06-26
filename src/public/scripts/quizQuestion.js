@@ -27,7 +27,12 @@ const navigationStopButton = documentEditor.getElement(QuizQuestionProperties.QU
 navigationStopButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationStopButtonClickListener);
 const navigationNextButton = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_NEXT_BUTTON_ID);
 navigationNextButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationNextButtonClickListener);
+const quizLogoutButton = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_LOGOUT_BUTTON_ID);
+quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
 updateButtonsVisibilityIfNeededAndUpdatePage();
+function quizLogoutButtonClickListener() {
+    location.href = Properties.QUIZ_LOGOUT_HTML_FILE;
+}
 function answerInputListener(event) {
     const insertedValue = event.target.value;
     if (insertedValue.length > 0) {

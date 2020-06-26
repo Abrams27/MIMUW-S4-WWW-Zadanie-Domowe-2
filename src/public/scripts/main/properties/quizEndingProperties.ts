@@ -17,5 +17,5 @@ export class QuizEndingProperties {
   public static QUIZ_ENDING_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS: number = 5;
 
   public static QUIZ_ENDING_RETURN_BUTTON: string = 'quiz-ending-return-button';
-
+  public static QUIZ_ENDING_LOGOUT_BUTTON_ID: string = 'quiz-ending-logout-button';
 }

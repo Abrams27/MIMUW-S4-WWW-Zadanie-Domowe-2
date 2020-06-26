@@ -34,7 +34,12 @@ function mapScoresAndAddRows(scores) {
 }
 const returnButton = documentEditor.getElement(QuizEndingProperties.QUIZ_ENDING_RETURN_BUTTON);
 returnButton.addEventListener(Properties.CLICK_EVENT_TYPE, returnButtonClickListener);
+const quizLogoutButton = documentEditor.getElement(QuizEndingProperties.QUIZ_ENDING_LOGOUT_BUTTON_ID);
+quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
 function returnButtonClickListener() {
     // todo pewnie cos zrobic
     location.href = Properties.QUIZ_HTML_FILE;
+}
+function quizLogoutButtonClickListener() {
+    location.href = Properties.QUIZ_LOGOUT_HTML_FILE;
 }

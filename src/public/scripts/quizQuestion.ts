@@ -7,6 +7,7 @@ import {CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch} fro
 import {QuizQuestionProperties} from './main/properties/quizQuestionProperties.js';
 import {QuizPercentageTimeDetailedScoreboard} from './main/scoreboards/scoreboard.js';
 import {HttpClient} from './main/httpclient/httpClient.js';
+import {QuizProperties} from './main/properties/quizProperties';
 
 
 const httpClient: HttpClient = new HttpClient();
@@ -41,7 +42,14 @@ navigationStopButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationSto
 const navigationNextButton: HTMLButtonElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_NAVIGATION_NEXT_BUTTON_ID) as HTMLButtonElement;
 navigationNextButton.addEventListener(Properties.CLICK_EVENT_TYPE, navigationNextButtonClickListener);
 
+const quizLogoutButton: HTMLButtonElement = documentEditor.getElement(QuizQuestionProperties.QUIZ_QUESTION_LOGOUT_BUTTON_ID) as HTMLButtonElement;
+quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
+
 updateButtonsVisibilityIfNeededAndUpdatePage();
+
+function quizLogoutButtonClickListener() {
+  location.href = Properties.QUIZ_LOGOUT_HTML_FILE;
+}
 
 function answerInputListener(event: any) {
   const insertedValue = event.target.value;
@@ -146,3 +154,4 @@ function getUserAnswerForCurrentQuestionOrEmpty(): string {
     return '';
   }
 }
+
