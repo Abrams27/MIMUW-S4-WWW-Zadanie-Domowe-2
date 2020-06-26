@@ -1,36 +1,28 @@
-import {NextFunction, Request, Response, Router} from 'express';
-import {databaseService} from '@shared/databaseService';
+import {Request} from 'express';
+import {databaseService, UserDB} from '@shared/databaseService';
 import {comparePasswordWithHash, hashPassword} from '@shared/hashUtils';
-
-interface UserProperties {
-  id: number,
-  username: string,
-  password_hash: string,
-  password_generation: number
-}
 
 class UserService {
 
   public async loginUser(req: Request, username: string, password: string): Promise<boolean> {
-    const user: any = await databaseService.getUserWithName(username);
+    const user: UserDB = await databaseService.getUserWithName(username);
 
     if (user !== undefined) {
-      const correctUser: UserProperties = user as UserProperties;
-      const isPasswordCorrect = comparePasswordWithHash(password, correctUser.password_hash);
+      const isPasswordCorrect = comparePasswordWithHash(password, user.password_hash);
 
       if (isPasswordCorrect) {
-        return this.loginCorrectUser(req, correctUser);
+        return this.loginCorrectUser(req, user);
       }
     }
 
     return false;
   }
 
-  private loginCorrectUser(req: Request, user: UserProperties): boolean {
+  private loginCorrectUser(req: Request, user: UserDB): boolean {
     if (req.session !== undefined) {
       req.session.username = user.username;
-      req.session.user_id = user.id;
-      req.session.password_generation = user.password_generation;
+      req.session.userId = user.id;
+      req.session.passwordGeneration = user.password_generation;
 
       return true;
     }
@@ -47,18 +39,16 @@ class UserService {
 
 
   public async changeUserPassword(req: Request, username: string, oldPassword: string, newPassword: string, newPasswordConfirmation: string): Promise<boolean> {
-    const user: any = await databaseService.getUserWithName(username);
+    const user: UserDB = await databaseService.getUserWithName(username);
 
     if (newPassword === newPasswordConfirmation && user !== undefined) {
-      const correctUser: UserProperties = user as UserProperties;
-
-      return await this.changeUserPasswordWithConfirmedPassword(req, correctUser, newPassword);
+      return await this.changeUserPasswordWithConfirmedPassword(req, user, newPassword);
     }
 
     return false;
   }
 
-  private async changeUserPasswordWithConfirmedPassword(req: Request, user: UserProperties, newPassword: string): Promise<boolean> {
+  private async changeUserPasswordWithConfirmedPassword(req: Request, user: UserDB, newPassword: string): Promise<boolean> {
     if (req.session !== undefined) {
       const username: string = user.username;
       const newPasswordGeneration: number = user.password_generation + 1;
@@ -81,11 +71,10 @@ class UserService {
 
 
   public async isUserLoggedWithLatestPassword(username: string, passwordGeneration: number): Promise<boolean> {
-    const user: any = await databaseService.getUserWithName(username);
+    const user: UserDB = await databaseService.getUserWithName(username);
 
     if (user !== undefined) {
-      const correctUser: UserProperties = user as UserProperties;
-      const userPasswordLatestPasswordGeneration: number = correctUser.password_generation;
+      const userPasswordLatestPasswordGeneration: number = user.password_generation;
 
       return this.isUserPasswordLatestOne(userPasswordLatestPasswordGeneration, passwordGeneration);
     }
@@ -99,4 +88,4 @@ class UserService {
 }
 
 
-export const userService = new UserService();
+export const userService: UserService = new UserService();

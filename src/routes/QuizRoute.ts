@@ -2,25 +2,18 @@ import {Request, Response, Router} from 'express';
 import 'express-session';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
 import {csrfProtectionMiddleware} from '../middlewares/csrfMiddleware';
-import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from '@shared/scoreboard';
-import {Quiz} from '@shared/quizzes';
-import {databaseService} from '@shared/databaseService';
+import {QuizDetailedScoreboard} from '@shared/scoreboard';
+import {QuizShortDB, QuizWithJsonDB, ScoreDB} from '@shared/databaseService';
+import {quizService} from '@shared/quizService';
 
 const router = Router();
 
+
 router.get('/list', async (req: Request, res: Response) => {
-  if (req.session) {
-    const userId: number = req.session.user_id;
+  if (req.session !== undefined) {
+    const userId: number = req.session.userId;
 
-    const all = await databaseService.getAllQuizzesIdsAndNames();
-    const solved = await databaseService.getSolvedQuizzesIdsByUser(userId);
-
-    const unsolvedQuizzes = all.filter(a => solved.find( o => o.quiz_id === a.id) === undefined);
-    console.log(req.session.user_id);
-    console.log(all);
-    console.log(solved);
-    console.log(unsolvedQuizzes);
-
+    const unsolvedQuizzes: QuizShortDB[] = await quizService.getAllUnsolvedQuizzes(userId);
 
     res.json(unsolvedQuizzes);
     return res.status(OK).end();
@@ -31,89 +24,66 @@ router.get('/list', async (req: Request, res: Response) => {
 
 
 router.get('/solved', async (req: Request, res: Response) => {
-  if (req.session) {
-    const userId: number = req.session.user_id;
+  if (req.session !== undefined) {
+    const userId: number = req.session.userId;
 
-    const all = await databaseService.getAllQuizzesIdsAndNames();
-    const solved = await databaseService.getSolvedQuizzesIdsByUser(userId);
+    const solvedQuizzes: QuizShortDB[] = await quizService.getAllSolvedQuizzes(userId);
 
-    const unsolvedQuizzes = all.filter(a => solved.find( o => o.quiz_id === a.id) !== undefined);
-    console.log(req.session.user_id);
-    console.log(all);
-    console.log(solved);
-    console.log(unsolvedQuizzes);
-
-
-    res.json(unsolvedQuizzes);
+    res.json(solvedQuizzes);
     return res.status(OK).end();
   }
 
   return res.status(UNAUTHORIZED).end();
 });
 
+
 router.get('/scores', async (req: Request, res: Response) => {
-  const all: number[] = await databaseService.getAllScores();
+  const all: ScoreDB[] = await quizService.getQuizzesScores();
 
   res.json(all);
   return res.status(OK).end();
 });
 
+
 router.get('/name/:quizName', async (req: Request, res: Response) => {
-  if (req.session) {
+  if (req.session !== undefined) {
     const quizName: string = req.params.quizName;
+    const currentTime: number = Date.now().valueOf();
 
-    const all = await databaseService.getQuizWithName(quizName);
+    const quiz: QuizWithJsonDB  = await quizService.getQuizWithName(quizName);
+    req.session.startTimestamp = currentTime;
 
-    req.session.start_timestamp = Date.now().valueOf();
-
-    res.json(all);
+    res.json(quiz);
     return res.status(OK).end();
   }
 
   return res.status(UNAUTHORIZED).end();
 });
+
 
 router.post('/result/:quizName', csrfProtectionMiddleware, async (req: Request, res: Response) => {
-  if (req.session) {
-    const userId = req.session.user_id;
-    const answerTime = Date.now().valueOf() - req.session.start_timestamp;
+  if (req.session !== undefined) {
+    const userId: number = req.session.userId;
+    const quizResultJson: any = req.body;
+    const answerTime: number = Date.now().valueOf() - req.session.startTimestamp;
 
-    const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard = QuizPercentageTimeDetailedScoreboard.copyOf(req.body);
-    const quizName: string = quizPercentageTimeDetailedScoreboard.getQuizName();
-    const quizJson = await databaseService.getQuizWithName(quizName);
-    const quiz = Quiz.fromJson(quizJson.quiz);
+    const saveQuizResult: boolean = await quizService.saveQuizResult(userId, quizResultJson, answerTime);
 
-    const quizDetailedScoreboard: QuizDetailedScoreboard =
-        QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, answerTime);
-
-    console.log(quizDetailedScoreboard);
-    const quizId = await databaseService.getQuizIdWithName(quizName);
-    console.log(quizId.id);
-    console.log(userId);
-    console.log(quizDetailedScoreboard.getQuizScore().getScore());
-
-    await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
-
-    return res.status(OK).end();
+    if (saveQuizResult) {
+      return res.status(OK).end();
+    }
   }
 
   return res.status(UNAUTHORIZED).end();
 });
+
 
 router.get('/result/:quizName', async (req: Request, res: Response) => {
   if (req.session) {
-
-    const userId: number = req.session.user_id;
+    const userId: number = req.session.userId;
     const quizName: string = req.params.quizName;
 
-    console.log(quizName);
-    const quizId = await databaseService.getQuizIdWithName(quizName);
-    console.log(quizId);
-    const userQuizScoreJson = await databaseService.getUserQuizScore(quizId.id, userId);
-
-    console.log(userQuizScoreJson);
-    const quizDetailedScoreboard: QuizDetailedScoreboard =
-        QuizDetailedScoreboard.fromJson(userQuizScoreJson.stats);
+    const quizDetailedScoreboard: QuizDetailedScoreboard = await quizService.getQuizResult(userId, quizName);
 
     res.json(quizDetailedScoreboard.toJson());
     return res.status(OK).end();
@@ -121,5 +91,6 @@ router.get('/result/:quizName', async (req: Request, res: Response) => {
 
   return res.status(UNAUTHORIZED).end();
 });
+
 
 export default router;
