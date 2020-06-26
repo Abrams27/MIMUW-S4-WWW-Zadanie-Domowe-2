@@ -40,8 +40,8 @@ db.serialize(() => {
   db.run('INSERT INTO quizzes VALUES (2, ?, ?)', ['alkoholowo matematyczny quiz XDDDDDDD', exampleQuiz]);
 
   db.run('CREATE TABLE scores (id INTEGER PRIMARY KEY, quiz_id INTEGER REFERENCES quizzes(id) , score INTEGER, user_id INTEGER REFERENCES users(id), stats TEXT)');
-  db.run('INSERT INTO scores VALUES (1, ?, ?, ?, ?)', [2, 21372137, 1, '']);
+  db.run('INSERT INTO scores VALUES (1, ?, ?, ?, ?)', [2, 21372137, 2, '']);
   db.run('INSERT INTO scores VALUES (2, ?, ?, ?, ?)', [1, 1822, 2, '']);
-  db.run('INSERT INTO scores VALUES (3, ?, ?, ?, ?)', [2, 6969, 2, '']);
+  db.run('INSERT INTO scores VALUES (3, ?, ?, ?, ?)', [2, 6969, 1, '{"questionsStatistics":[{"isAnswerCorrectFlag":false,"timePenalty":1822,"timeSpendInSeconds":1078.5000000000002,"correctAnswer":79},{"isAnswerCorrectFlag":false,"timePenalty":1822,"timeSpendInSeconds":2157.0000000000005,"correctAnswer":11712},{"isAnswerCorrectFlag":false,"timePenalty":1822,"timeSpendInSeconds":1078.5000000000002,"correctAnswer":324},{"isAnswerCorrectFlag":true,"timePenalty":1822,"timeSpendInSeconds":2157.0000000000005,"correctAnswer":42}],"quizScore":{"score":11937}}']);
 
 });

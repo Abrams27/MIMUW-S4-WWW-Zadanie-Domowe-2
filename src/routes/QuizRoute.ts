@@ -1,7 +1,7 @@
 import {Request, Response, Router} from 'express';
 import 'express-session';
 import {OK, UNAUTHORIZED} from 'http-status-codes';
-import {csrfProtectionMiddleware} from '../middlewares/csrf';
+import {csrfProtectionMiddleware} from '../middlewares/csrfMiddleware';
 import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from '@shared/scoreboard';
 import {Quiz} from '@shared/quizzes';
 import {databaseService} from '@shared/databaseService';

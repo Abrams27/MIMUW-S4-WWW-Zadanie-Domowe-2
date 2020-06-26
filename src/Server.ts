@@ -13,7 +13,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
-import {csrfCookieSetter, csrfProtectionMiddleware} from './middlewares/csrf';
+import {csrfCookieSetter, csrfProtectionMiddleware} from './middlewares/csrfMiddleware';
 
 // Init express
 const app = express();
