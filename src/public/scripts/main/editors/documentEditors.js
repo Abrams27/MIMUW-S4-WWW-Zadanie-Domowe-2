@@ -1,5 +1,5 @@
-import { Utils } from "../utils/utils.js";
-import { QuizEndingProperties } from "../properties/quizEndingProperties.js";
+import { Utils } from '../utils/utils.js';
+import { QuizEndingProperties } from '../properties/quizEndingProperties.js';
 export class SelectEditor {
     constructor(document, selectElementId) {
         this.documentEditor = DocumentEditor.fromDocument(document);
@@ -105,7 +105,7 @@ export class DocumentEditor {
     }
     getElement(elementId) {
         const nullableResultElement = this.document.getElementById(elementId);
-        return Utils.notNullHTMLElementOrThrowError(nullableResultElement, "invalid element id");
+        return Utils.notNullHTMLElementOrThrowError(nullableResultElement, 'invalid element id');
     }
     getDocument() {
         return this.document;
@@ -117,7 +117,7 @@ export class DocumentEditor {
     getCookieRow(cookieName) {
         const cookieRow = this.document.cookie
             .split('; ')
-            .find(row => row.startsWith('CSRF-TOKEN'));
+            .find(row => row.startsWith(cookieName));
         return cookieRow !== undefined ? cookieRow : '=';
     }
 }
@@ -145,7 +145,7 @@ let OptionElementBuilder = /** @class */ (() => {
             return this.resultOptionElement;
         }
     }
-    OptionElementBuilder.OPTION_TAG = "option";
+    OptionElementBuilder.OPTION_TAG = 'option';
     return OptionElementBuilder;
 })();
 export { OptionElementBuilder };

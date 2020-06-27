@@ -18,12 +18,12 @@ router.post('/login', csrfProtectionMiddleware, async (req: Request, res: Respon
     const loginUserResult = await userService.loginUser(req, username, password);
 
     if (loginUserResult) {
-      res.redirect('/static/quiz.html');
+      res.redirect('/static/quiz/quiz.html');
       return res.status(OK).end();
     }
   }
 
-  res.redirect('/static/login.html');
+  res.redirect('/static/user/login.html');
   return res.status(UNAUTHORIZED).end();
 });
 
@@ -32,11 +32,11 @@ router.get('/logout', async (req: Request, res: Response) => {
   if (req.session !== undefined) {
     await userService.logoutUser(req);
 
-    res.redirect('/static/login.html');
+    res.redirect('/static/user/login.html');
     return res.status(OK).end();
   }
 
-  res.redirect('/static/login.html');
+  res.redirect('/static/user/login.html');
   return res.status(UNAUTHORIZED).end();
 });
 
@@ -56,7 +56,7 @@ router.post('/change', csrfProtectionMiddleware, isUserLoggedMiddleware, async (
     }
   }
 
-  res.redirect('/static/passwordChange.html');
+  res.redirect('/static/user/passwordChange.html');
   return res.status(UNAUTHORIZED).end();
 });
 

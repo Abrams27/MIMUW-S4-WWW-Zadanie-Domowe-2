@@ -1,9 +1,6 @@
 import { DocumentEditor } from './main/editors/documentEditors.js';
+import { Properties } from './main/properties/Properties.js';
 const documentEditor = DocumentEditor.fromDocument(document);
-const cookieValue = document.cookie
-    .split('; ')
-    .find(row => row.startsWith('CSRF-TOKEN'))
-    .split('=')[1];
-console.log(cookieValue);
-const input = documentEditor.getElement('crsf');
-input.value = cookieValue;
+const crsfInput = documentEditor.getElement(Properties.CRSF_INPUT_ID);
+const crsfCookie = documentEditor.getCookie(Properties.CRSF_COOKIE_NAME);
+crsfInput.value = crsfCookie;
