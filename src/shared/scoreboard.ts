@@ -130,6 +130,10 @@ export class QuestionStatistics {
     }
   }
 
+  public getTimeSpendInSeconds(): number {
+    return this.timeSpendInSeconds;
+  }
+
 }
 
 
@@ -240,4 +244,83 @@ class QuizQuestionWithAnswersAndTimeMapper {
     return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, 1);
   }
 
+}
+
+
+export class QuizAverageTimeScoreboard {
+
+  private questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[];
+
+  private constructor(questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[]) {
+    this.questionsAverageTimeScoreboard = questionsAverageTimeScoreboard;
+  }
+
+  public static fromJson(json: string): QuizAverageTimeScoreboard {
+    const quizAverageTimeScoreboardJson: any = JSON.parse(json);
+
+    return this.copyOf(quizAverageTimeScoreboardJson);
+  }
+
+  public static copyOf(quizAverageTimeScoreboard: QuizAverageTimeScoreboard): QuizAverageTimeScoreboard {
+    const questionsAverageTimeScoreboardCopy: QuestionAverageTimeScoreboard[] =
+        QuizAverageTimeScoreboard.copyOfQuestionsAverageTimeScoreboard(quizAverageTimeScoreboard.questionsAverageTimeScoreboard);
+
+    return new QuizAverageTimeScoreboard(questionsAverageTimeScoreboardCopy);
+  }
+
+  public static copyOfQuestionsAverageTimeScoreboard(questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[]): QuestionAverageTimeScoreboard[] {
+    return questionsAverageTimeScoreboard
+      .map(questionAverageTimeScoreboard => QuestionAverageTimeScoreboard.copyOf(questionAverageTimeScoreboard));
+  }
+
+  public static createEmpty(numberOfQuestions: number): QuizAverageTimeScoreboard {
+    const questionsAverageTimeScoreboard = this.getEmptyQuizAverageTimeScoreboards(numberOfQuestions);
+
+    return new QuizAverageTimeScoreboard(questionsAverageTimeScoreboard);
+  }
+
+  private static getEmptyQuizAverageTimeScoreboards(numberOfQuestions: number) {
+    const questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[] = [];
+
+    for (let i = 0; i < numberOfQuestions; i++) {
+      questionsAverageTimeScoreboard.push(new QuestionAverageTimeScoreboard(0, 0));
+    }
+
+    return questionsAverageTimeScoreboard;
+  }
+
+  public updateWithQuizScoreboard(quizDetailedScoreboard: QuizDetailedScoreboard) {
+    const questionsStatistics: QuestionStatistics[] = quizDetailedScoreboard.getQuestionsStatistics();
+    for (let i = 0; i < questionsStatistics.length; i++) {
+      if (questionsStatistics[i].isAnswerCorrect()) {
+        this.questionsAverageTimeScoreboard[i].updateQuestionTime(questionsStatistics[i].getTimeSpendInSeconds());
+      }
+    }
+  }
+
+  public toJson(): string {
+    return JSON.stringify(this);
+  }
+
+}
+
+class QuestionAverageTimeScoreboard {
+
+  private answersTime: number;
+  private numberOfAnswers: number;
+
+
+  constructor(answersTime: number, numberOfAnswers: number) {
+    this.answersTime = answersTime;
+    this.numberOfAnswers = numberOfAnswers;
+  }
+
+  public static copyOf(questionAverageTimeScoreboard: QuestionAverageTimeScoreboard): QuestionAverageTimeScoreboard {
+    return new QuestionAverageTimeScoreboard(questionAverageTimeScoreboard.answersTime, questionAverageTimeScoreboard.numberOfAnswers);
+  }
+
+  public updateQuestionTime(answerTime: number) {
+    this.answersTime += answerTime;
+    this.numberOfAnswers += 1;
+  }
 }

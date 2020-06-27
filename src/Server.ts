@@ -4,7 +4,7 @@ import path from 'path';
 import helmet from 'helmet';
 
 import express, { Request, Response, NextFunction } from 'express';
-import { BAD_REQUEST } from 'http-status-codes';
+import {BAD_REQUEST, OK} from 'http-status-codes';
 import 'express-async-errors';
 
 import session from 'express-session'
@@ -14,6 +14,7 @@ const SQLiteStore = require('connect-sqlite3')(session);
 import BaseRouter from './routes';
 import logger from '@shared/Logger';
 import {csrfCookieSetter, csrfProtectionMiddleware} from './middlewares/csrfMiddleware';
+import {isUserLoggedMiddleware} from './middlewares/userMiddleware';
 
 // Init express
 const app = express();
@@ -60,6 +61,11 @@ app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
 
 const viewsDir = path.join(__dirname, 'views');
 app.set('views', viewsDir);
+
 app.use('/static', csrfProtectionMiddleware, csrfCookieSetter, express.static(path.join(__dirname, 'public')));
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+    res.redirect('/static/login.html');
+});
 
 export default app;

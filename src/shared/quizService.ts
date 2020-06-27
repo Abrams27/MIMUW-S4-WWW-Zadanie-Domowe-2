@@ -1,4 +1,5 @@
 import {
+  AverageTimeStatsDB,
   databaseService,
   QuizIdDB,
   QuizScoreShortDB,
@@ -7,7 +8,11 @@ import {
   ScoreDB,
   ScoreStatsDB
 } from '@shared/databaseService';
-import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from '@shared/scoreboard';
+import {
+  QuizAverageTimeScoreboard,
+  QuizDetailedScoreboard,
+  QuizPercentageTimeDetailedScoreboard
+} from '@shared/scoreboard';
 import {Quiz} from '@shared/quizzes';
 
 class QuizService {
@@ -60,8 +65,13 @@ class QuizService {
     const quizDetailedScoreboard: QuizDetailedScoreboard =
         QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, answerTime);
 
+    const averageTimeStatsDB: AverageTimeStatsDB = await databaseService.getAverageTimeStats(quizId.id);
+    const questionAverageTimeScoreboard: QuizAverageTimeScoreboard = QuizAverageTimeScoreboard.fromJson(averageTimeStatsDB.stats);
+    questionAverageTimeScoreboard.updateWithQuizScoreboard(quizDetailedScoreboard);
 
+    await databaseService.saveAverageTimeStats(quizId.id, questionAverageTimeScoreboard.toJson());
     await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
+
     // TODO
     return true;
   }

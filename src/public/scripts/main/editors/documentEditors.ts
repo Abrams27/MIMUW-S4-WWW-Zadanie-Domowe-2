@@ -1,5 +1,5 @@
-import {Utils} from "../utils/utils.js";
-import {QuizEndingProperties} from "../properties/quizEndingProperties.js";
+import {Utils} from '../utils/utils.js';
+import {QuizEndingProperties} from '../properties/quizEndingProperties.js';
 
 
 export class SelectEditor {
@@ -9,7 +9,7 @@ export class SelectEditor {
 
   public constructor(document: Document, selectElementId: string) {
     this.documentEditor = DocumentEditor.fromDocument(document);
-    this.selectElement = <HTMLSelectElement>this.documentEditor.getElement(selectElementId);
+    this.selectElement = this.documentEditor.getElement(selectElementId) as HTMLSelectElement;
   }
 
   public addOptions(options: string[], optionElementClass: string) {
@@ -158,7 +158,7 @@ export class DocumentEditor {
   public getElement(elementId: string): HTMLElement {
     const nullableResultElement: HTMLElement | null = this.document.getElementById(elementId);
 
-    return Utils.notNullHTMLElementOrThrowError(nullableResultElement, "invalid element id");
+    return Utils.notNullHTMLElementOrThrowError(nullableResultElement, 'invalid element id');
   }
 
   public getDocument(): Document {
@@ -174,7 +174,7 @@ export class DocumentEditor {
   private getCookieRow(cookieName: string): string {
     const cookieRow: string | undefined = this.document.cookie
       .split('; ')
-      .find(row => row.startsWith('CSRF-TOKEN'));
+      .find(row => row.startsWith(cookieName));
 
     return cookieRow !== undefined ? cookieRow : '=';
   }
@@ -182,7 +182,7 @@ export class DocumentEditor {
 
 export class OptionElementBuilder {
 
-  private static OPTION_TAG: string = "option";
+  private static OPTION_TAG: string = 'option';
 
   private readonly resultOptionElement: HTMLOptionElement;
 

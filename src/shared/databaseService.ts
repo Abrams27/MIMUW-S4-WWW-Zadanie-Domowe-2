@@ -37,6 +37,11 @@ export interface ScoreStatsDB {
 }
 
 
+export interface AverageTimeStatsDB {
+  stats: string
+}
+
+
 class DatabaseService {
 
   private database = new sqlite3.Database('persistence/main.db');
@@ -79,6 +84,15 @@ class DatabaseService {
 
   public async getUserQuizScore(quizId: number, userId: number): Promise<ScoreStatsDB> {
     return asyncDbGet(this.database, 'SELECT stats FROM scores WHERE quiz_id = ? AND user_id = ?', [quizId, userId]);
+  }
+
+
+  public async saveAverageTimeStats(quizId: number, stats: string): Promise<void> {
+    return asyncDbRun(this.database, 'INSERT OR REPLACE INTO average_time (id, quiz_id, stats) VALUES (?, ?, ?)', [quizId, quizId, stats]);
+  }
+
+  public async getAverageTimeStats(quizId: number): Promise<AverageTimeStatsDB> {
+    return asyncDbGet(this.database, 'SELECT stats FROM average_time WHERE quiz_id = ?', [quizId]);
   }
 
 }

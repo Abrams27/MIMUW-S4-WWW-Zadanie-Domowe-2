@@ -5,6 +5,4 @@ const documentEditor: DocumentEditor = DocumentEditor.fromDocument(document);
 const crsfInput: HTMLInputElement = documentEditor.getElement(Properties.CRSF_INPUT_ID) as HTMLInputElement;
 
 const crsfCookie: string = documentEditor.getCookie(Properties.CRSF_COOKIE_NAME);
-
-console!.log(crsfCookie);
 crsfInput.value = crsfCookie;

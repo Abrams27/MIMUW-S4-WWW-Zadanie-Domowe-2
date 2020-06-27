@@ -65,7 +65,7 @@ router.post('/result/:quizName', csrfProtectionMiddleware, async (req: Request, 
   if (req.session !== undefined) {
     const userId: number = req.session.userId;
     const quizResultJson: any = req.body;
-    const answerTime: number = Date.now().valueOf() - req.session.startTimestamp;
+    const answerTime: number = (Date.now().valueOf() - req.session.startTimestamp) / 1000;
 
     const saveQuizResult: boolean = await quizService.saveQuizResult(userId, quizResultJson, answerTime);
 
