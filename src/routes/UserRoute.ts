@@ -47,7 +47,7 @@ router.post('/change', csrfProtectionMiddleware, isUserLoggedMiddleware, async (
   const newPasswordConfirmation: string = req.body.newPasswordConfirmation;
   const username: string = req.session!.username;
 
-  if (oldPassword && newPassword && newPasswordConfirmation) {
+  if (newPassword.trim().length > 4 && oldPassword && newPassword && newPasswordConfirmation) {
     const changeUserPasswordResult = await userService.changeUserPassword(req, username, oldPassword, newPassword, newPasswordConfirmation);
 
     if (changeUserPasswordResult) {
