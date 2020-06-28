@@ -32,6 +32,14 @@ export class HttpClient {
       .map(element => element.score);
   }
 
+  public async getQuizTopScores(quizName: string): Promise<number[]> {
+    const fetchResult: any[] = await fetch(this.getUrl(`/api/quiz/result/best/${quizName}`))
+    .then(response => response.json());
+
+    return fetchResult
+    .map(element => element.score);
+  }
+
   public postQuizResults(quizName: string, quizResults: string, csrfToken: string): Promise<any> {
     return fetch(this.getUrl(`/api/quiz/result/${quizName}`), {
       method: 'POST',
@@ -41,7 +49,6 @@ export class HttpClient {
         'X-CSRF-Token': csrfToken
       }
     });
-    // .then(response => if);
   }
 
   public async getQuizStatistics(quizName: string): Promise<string> {

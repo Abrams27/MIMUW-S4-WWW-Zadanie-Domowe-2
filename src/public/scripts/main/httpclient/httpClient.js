@@ -42,6 +42,14 @@ export class HttpClient {
                 .map(element => element.score);
         });
     }
+    getQuizTopScores(quizName) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const fetchResult = yield fetch(this.getUrl(`/api/quiz/result/best/${quizName}`))
+                .then(response => response.json());
+            return fetchResult
+                .map(element => element.score);
+        });
+    }
     postQuizResults(quizName, quizResults, csrfToken) {
         return fetch(this.getUrl(`/api/quiz/result/${quizName}`), {
             method: 'POST',
@@ -51,7 +59,6 @@ export class HttpClient {
                 'X-CSRF-Token': csrfToken
             }
         });
-        // .then(response => if);
     }
     getQuizStatistics(quizName) {
         return __awaiter(this, void 0, void 0, function* () {

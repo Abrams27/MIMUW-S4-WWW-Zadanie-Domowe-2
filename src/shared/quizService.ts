@@ -53,7 +53,7 @@ class QuizService {
   }
 
 
-  public async saveQuizResult(userId: number, quizResultJson: any, answerTime: number): Promise<boolean> {
+  public async saveQuizResult(userId: number, quizResultJson: any, answerTime: number): Promise<void> {
     const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard = QuizPercentageTimeDetailedScoreboard.copyOf(quizResultJson);
     const quizName: string = quizPercentageTimeDetailedScoreboard.getQuizName();
 
@@ -71,9 +71,6 @@ class QuizService {
 
     await databaseService.saveAverageTimeStats(quizId.id, quizAverageTimeScoreboard.toJson());
     await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
-
-    // TODO
-    return true;
   }
 
 
@@ -88,6 +85,14 @@ class QuizService {
 
     return quizDetailedScoreboard;
   }
+
+
+  public async getQuizTopScores(quizName: string): Promise<ScoreDB[]> {
+    const quizId: QuizIdDB = await databaseService.getQuizIdWithName(quizName);
+
+    return databaseService.getQuizTopScore(quizId.id);
+  }
+
 
 }
 

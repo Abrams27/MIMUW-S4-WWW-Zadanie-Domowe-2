@@ -86,6 +86,10 @@ class DatabaseService {
     return asyncDbGet(this.database, 'SELECT stats FROM scores WHERE quiz_id = ? AND user_id = ?', [quizId, userId]);
   }
 
+  public async getQuizTopScore(quizId: number): Promise<ScoreDB[]> {
+    return asyncDbAll(this.database, 'SELECT score FROM scores WHERE quiz_id = ?', [quizId]);
+  }
+
 
   public async saveAverageTimeStats(quizId: number, stats: string): Promise<void> {
     return asyncDbRun(this.database, 'INSERT OR REPLACE INTO average_time (id, quiz_id, stats) VALUES (?, ?, ?)', [quizId, quizId, stats]);

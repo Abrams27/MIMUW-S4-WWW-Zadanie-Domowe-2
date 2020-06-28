@@ -33,11 +33,14 @@ httpClient.getQuizStatistics(quizName)
 // httpClient.getTopScores()
 // .then(result => mapScoresAndAddRows(result));
 
-mapScoresAndAddRows([2,1,3,4]);
+httpClient.getQuizTopScores(quizName)
+  .then( o => mapScoresAndAddRows(o));
+
 function mapScoresAndAddRows(scores: number[]) {
   const mappedAndSortedScores: QuizScore[] = scores
   .map(o => new QuizScore(o))
-  .sort((a, b) => a.compare(b));
+  .sort((a, b) => a.compare(b))
+  .slice(0, 5);
 
   scoreboardTableEditor.addRowsWithScoresInGivenOrder(mappedAndSortedScores, QuizEndingProperties.QUIZ_ENDING_SCOREBOARD_TABLE_CLASS);
 }

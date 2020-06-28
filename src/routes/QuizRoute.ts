@@ -5,11 +5,12 @@ import {csrfProtectionMiddleware} from '../middlewares/csrfMiddleware';
 import {QuizDetailedScoreboard} from '@shared/scoreboard';
 import {QuizShortDB, QuizWithJsonDB, ScoreDB} from '@shared/databaseService';
 import {quizService} from '@shared/quizService';
+import {isUserLoggedMiddleware} from '../middlewares/userMiddleware';
 
 const router = Router();
 
 
-router.get('/list', async (req: Request, res: Response) => {
+router.get('/list', isUserLoggedMiddleware, async (req: Request, res: Response) => {
   if (req.session !== undefined) {
     const userId: number = req.session.userId;
 
@@ -23,7 +24,7 @@ router.get('/list', async (req: Request, res: Response) => {
 });
 
 
-router.get('/solved', async (req: Request, res: Response) => {
+router.get('/solved', isUserLoggedMiddleware, async (req: Request, res: Response) => {
   if (req.session !== undefined) {
     const userId: number = req.session.userId;
 
@@ -37,7 +38,7 @@ router.get('/solved', async (req: Request, res: Response) => {
 });
 
 
-router.get('/scores', async (req: Request, res: Response) => {
+router.get('/scores', isUserLoggedMiddleware, async (req: Request, res: Response) => {
   const all: ScoreDB[] = await quizService.getQuizzesScores();
 
   res.json(all);
@@ -45,7 +46,7 @@ router.get('/scores', async (req: Request, res: Response) => {
 });
 
 
-router.get('/name/:quizName', async (req: Request, res: Response) => {
+router.get('/name/:quizName', isUserLoggedMiddleware, async (req: Request, res: Response) => {
   if (req.session !== undefined) {
     const quizName: string = req.params.quizName;
     const currentTime: number = Date.now().valueOf();
@@ -61,24 +62,22 @@ router.get('/name/:quizName', async (req: Request, res: Response) => {
 });
 
 
-router.post('/result/:quizName', csrfProtectionMiddleware, async (req: Request, res: Response) => {
+router.post('/result/:quizName', csrfProtectionMiddleware, isUserLoggedMiddleware, async (req: Request, res: Response) => {
   if (req.session !== undefined) {
     const userId: number = req.session.userId;
     const quizResultJson: any = req.body;
     const answerTime: number = (Date.now().valueOf() - req.session.startTimestamp) / 1000;
 
-    const saveQuizResult: boolean = await quizService.saveQuizResult(userId, quizResultJson, answerTime);
+    await quizService.saveQuizResult(userId, quizResultJson, answerTime);
 
-    if (saveQuizResult) {
-      return res.status(OK).end();
-    }
+    return res.status(OK).end();
   }
 
   return res.status(UNAUTHORIZED).end();
 });
 
 
-router.get('/result/:quizName', async (req: Request, res: Response) => {
+router.get('/result/:quizName', isUserLoggedMiddleware, async (req: Request, res: Response) => {
   if (req.session) {
     const userId: number = req.session.userId;
     const quizName: string = req.params.quizName;
@@ -86,6 +85,20 @@ router.get('/result/:quizName', async (req: Request, res: Response) => {
     const quizDetailedScoreboard: QuizDetailedScoreboard = await quizService.getQuizResult(userId, quizName);
 
     res.json(quizDetailedScoreboard.toJson());
+    return res.status(OK).end();
+  }
+
+  return res.status(UNAUTHORIZED).end();
+});
+
+
+router.get('/result/best/:quizName', isUserLoggedMiddleware, async (req: Request, res: Response) => {
+  if (req.session) {
+    const quizName: string = req.params.quizName;
+
+    const quizTopScores: ScoreDB[] = await quizService.getQuizTopScores(quizName);
+
+    res.json(quizTopScores);
     return res.status(OK).end();
   }
 
