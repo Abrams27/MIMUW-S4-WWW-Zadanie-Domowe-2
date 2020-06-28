@@ -19,9 +19,9 @@ app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser('pozdrawiamPanaCiebiere42'));
 app.use(session({
-    store: new SQLiteStore(),
+    store: new SQLiteStore({dir:'persistence', db: 'sessions'}),
     secret: 'pozdrawiamPanaCiebiere42',
-    cookie: { maxAge: 10 * 60 * 1000}
+    cookie: { maxAge: 10 * 60 * 1000},
 }));
 
 app.use(morgan('dev'));
