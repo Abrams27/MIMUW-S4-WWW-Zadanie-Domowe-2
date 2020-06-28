@@ -1,6 +1,6 @@
 import {Request, Response, Router} from 'express';
 import 'express-session';
-import {OK, UNAUTHORIZED} from 'http-status-codes';
+import {INTERNAL_SERVER_ERROR, OK, UNAUTHORIZED} from 'http-status-codes';
 import {csrfProtectionMiddleware} from '../middlewares/csrfMiddleware';
 import {QuizDetailedScoreboard} from '@shared/scoreboard';
 import {QuizShortDB, QuizWithJsonDB, ScoreDB} from '@shared/databaseService';
@@ -62,15 +62,19 @@ router.get('/name/:quizName', isUserLoggedMiddleware, async (req: Request, res: 
 });
 
 
-router.post('/result/:quizName', csrfProtectionMiddleware, isUserLoggedMiddleware, async (req: Request, res: Response) => {
+router.post('/result', csrfProtectionMiddleware, isUserLoggedMiddleware, async (req: Request, res: Response) => {
   if (req.session !== undefined) {
     const userId: number = req.session.userId;
     const quizResultJson: any = req.body;
     const answerTime: number = (Date.now().valueOf() - req.session.startTimestamp) / 1000;
 
-    await quizService.saveQuizResult(userId, quizResultJson, answerTime);
+    const saveQuizResult: boolean = await quizService.saveQuizResult(userId, quizResultJson, answerTime);
 
-    return res.status(OK).end();
+    if (saveQuizResult) {
+      return res.status(OK).end();
+    }
+
+    return res.status(INTERNAL_SERVER_ERROR).end();
   }
 
   return res.status(UNAUTHORIZED).end();

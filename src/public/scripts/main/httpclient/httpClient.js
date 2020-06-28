@@ -51,7 +51,7 @@ export class HttpClient {
         });
     }
     postQuizResults(quizName, quizResults, csrfToken) {
-        return fetch(this.getUrl(`/api/quiz/result/${quizName}`), {
+        return fetch(this.getUrl(`/api/quiz/result`), {
             method: 'POST',
             body: quizResults,
             headers: {

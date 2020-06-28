@@ -7,7 +7,6 @@ import {CurrentQuizSessionPageEditor, CurrentQuizSessionPageEditorStopwatch} fro
 import {QuizQuestionProperties} from './main/properties/quizQuestionProperties.js';
 import {QuizPercentageTimeDetailedScoreboard} from './main/scoreboards/scoreboard.js';
 import {HttpClient} from './main/httpclient/httpClient.js';
-import {QuizProperties} from './main/properties/quizProperties';
 
 
 const httpClient: HttpClient = new HttpClient();
@@ -89,16 +88,25 @@ function navigationStopButtonClickListener() {
   const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard = quizSession.getQuizPercentageTimeDetailedScoreboard();
   const quizPercentageTimeDetailedScoreboardJson: string = quizPercentageTimeDetailedScoreboard.toJson();
 
-  // todo obsluga?
   httpClient.postQuizResults(quiz.getName(), quizPercentageTimeDetailedScoreboardJson, crsfCookie)
-    .then(_ => postQuizResultsAndRedirect(quizPercentageTimeDetailedScoreboardJson));
+    .then(response => {
+      if (response.ok) {
+        postQuizResultsAndRedirectToEnd()
+      } else {
+        redirectToError();
+      }
+    })
 }
 
-function postQuizResultsAndRedirect(quizDetaildedScoreboardJson: string) {
+function postQuizResultsAndRedirectToEnd() {
   sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
   sessionStorage.setItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY, quiz.getName());
 
   location.href = Properties.QUIZ_ENDING_HTML_FILE;
+}
+
+function redirectToError() {
+  location.href = Properties.QUIZ_ALREADY_SOLVED_ERROR_HTML_FILE;
 }
 
 

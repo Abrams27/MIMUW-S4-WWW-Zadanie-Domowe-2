@@ -15,7 +15,7 @@ export const isUserLoggedMiddleware = async (req: Request, res: Response, next: 
     }
   }
 
-  res.redirect('/static/login.html');
+  res.redirect('/static/user/login.html');
   return res.status(UNAUTHORIZED).end();
 };
 

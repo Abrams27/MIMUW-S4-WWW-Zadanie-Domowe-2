@@ -41,7 +41,7 @@ export class HttpClient {
   }
 
   public postQuizResults(quizName: string, quizResults: string, csrfToken: string): Promise<any> {
-    return fetch(this.getUrl(`/api/quiz/result/${quizName}`), {
+    return fetch(this.getUrl(`/api/quiz/result`), {
       method: 'POST',
       body: quizResults,
       headers: {

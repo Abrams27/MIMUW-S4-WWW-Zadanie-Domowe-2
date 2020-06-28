@@ -62,14 +62,23 @@ function navigationBackButtonClickListener() {
 function navigationStopButtonClickListener() {
     const quizPercentageTimeDetailedScoreboard = quizSession.getQuizPercentageTimeDetailedScoreboard();
     const quizPercentageTimeDetailedScoreboardJson = quizPercentageTimeDetailedScoreboard.toJson();
-    // todo obsluga?
     httpClient.postQuizResults(quiz.getName(), quizPercentageTimeDetailedScoreboardJson, crsfCookie)
-        .then(_ => postQuizResultsAndRedirect(quizPercentageTimeDetailedScoreboardJson));
+        .then(response => {
+        if (response.ok) {
+            postQuizResultsAndRedirectToEnd();
+        }
+        else {
+            redirectToError();
+        }
+    });
 }
-function postQuizResultsAndRedirect(quizDetaildedScoreboardJson) {
+function postQuizResultsAndRedirectToEnd() {
     sessionStorage.removeItem(Properties.QUIZ_SESSION_STORAGE_KEY);
     sessionStorage.setItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY, quiz.getName());
     location.href = Properties.QUIZ_ENDING_HTML_FILE;
+}
+function redirectToError() {
+    location.href = Properties.QUIZ_ALREADY_SOLVED_ERROR_HTML_FILE;
 }
 function navigationNextButtonClickListener() {
     quizSession.loadNextQuestion();

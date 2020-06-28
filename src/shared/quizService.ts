@@ -53,24 +53,30 @@ class QuizService {
   }
 
 
-  public async saveQuizResult(userId: number, quizResultJson: any, answerTime: number): Promise<void> {
+  public async saveQuizResult(userId: number, quizResultJson: any, answerTime: number): Promise<boolean> {
     const quizPercentageTimeDetailedScoreboard: QuizPercentageTimeDetailedScoreboard = QuizPercentageTimeDetailedScoreboard.copyOf(quizResultJson);
     const quizName: string = quizPercentageTimeDetailedScoreboard.getQuizName();
 
     const quizId: QuizIdDB = await databaseService.getQuizIdWithName(quizName);
-    const quizJson: QuizWithJsonDB = await databaseService.getQuizWithName(quizName);
 
-    const quiz = Quiz.fromJson(quizJson.quiz);
+    if (await databaseService.getUserQuizScore(quizId.id, userId) === undefined) {
+      const quizJson: QuizWithJsonDB = await databaseService.getQuizWithName(quizName);
 
-    const quizDetailedScoreboard: QuizDetailedScoreboard =
-        QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, answerTime);
+      const quiz = Quiz.fromJson(quizJson.quiz);
+      const quizDetailedScoreboard: QuizDetailedScoreboard =
+          QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, answerTime);
 
-    const averageTimeStatsDB: AverageTimeStatsDB = await databaseService.getAverageTimeStats(quizId.id);
-    const quizAverageTimeScoreboard: QuizAverageTimeScoreboard = QuizAverageTimeScoreboard.fromJson(averageTimeStatsDB.stats);
-    quizAverageTimeScoreboard.updateWithQuizScoreboard(quizDetailedScoreboard);
+      const averageTimeStatsDB: AverageTimeStatsDB = await databaseService.getAverageTimeStats(quizId.id);
+      const quizAverageTimeScoreboard: QuizAverageTimeScoreboard = QuizAverageTimeScoreboard.fromJson(averageTimeStatsDB.stats);
+      quizAverageTimeScoreboard.updateWithQuizScoreboard(quizDetailedScoreboard);
 
-    await databaseService.saveAverageTimeStats(quizId.id, quizAverageTimeScoreboard.toJson());
-    await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
+      await databaseService.saveAverageTimeStats(quizId.id, quizAverageTimeScoreboard.toJson());
+      await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
+
+      return true;
+    }
+
+    return false;
   }
 
 
