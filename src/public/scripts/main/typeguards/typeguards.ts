@@ -1,14 +1,14 @@
 import {QuizJson, QuizQuestionWithAnswerJson} from '../../resources/quizzesConfig.js';
-import {QuestionStatistics, QuizDetailedScoreboard, QuizScore} from "../scoreboards/scoreboard";
+import {QuestionStatistics, QuizDetailedScoreboard, QuizScore} from '../scoreboards/scoreboard';
 
 export class TypeGuardsUtils {
 
-  public static STRING_TYPE: string = "string";
-  public static NUMBER_TYPE: string = "number";
-  public static BOOLEAN_TYPE: string = "boolean";
+  public static STRING_TYPE: string = 'string';
+  public static NUMBER_TYPE: string = 'number';
+  public static BOOLEAN_TYPE: string = 'boolean';
 
   public static doesObjectContainsFields(object: any, fields: string[]): boolean {
-    for (let field of fields) {
+    for (const field of fields) {
       if (!(field in object)) {
         return false;
       }
@@ -22,7 +22,7 @@ export class TypeGuardsUtils {
   }
 
   public static isFieldOfType(field: any, requiredFieldType: string): boolean {
-    return typeof field == requiredFieldType
+    return typeof field === requiredFieldType
   }
 
 }
@@ -30,7 +30,7 @@ export class TypeGuardsUtils {
 
 export class QuizGuard {
 
-  private static OBJECT_FIELDS: string[] = ["name", "introduction", "questionsWithAnswers"];
+  private static OBJECT_FIELDS: string[] = ['name', 'introduction', 'questionsWithAnswers'];
 
   public static check(object: any): object is QuizJson {
     return TypeGuardsUtils.doesObjectContainsFields(object, this.OBJECT_FIELDS)
@@ -58,7 +58,7 @@ export class QuizGuard {
 
 export class QuizQuestionWithAnswerGuard {
 
-  private static OBJECT_FIELDS: string[] = ["question", "answer", "wrongAnswerPenalty"];
+  private static OBJECT_FIELDS: string[] = ['question', 'answer', 'wrongAnswerPenalty'];
 
   public static check(object: any): object is QuizQuestionWithAnswerJson {
     return TypeGuardsUtils.doesObjectContainsFields(object, this.OBJECT_FIELDS)
@@ -72,7 +72,7 @@ export class QuizQuestionWithAnswerGuard {
 
 export class QuizDetailedScoreboardGuard {
 
-  private static OBJECT_FIELDS: string[] = ["questionsStatistics", "quizScore"];
+  private static OBJECT_FIELDS: string[] = ['questionsStatistics', 'quizScore'];
 
   public static check(object: any): object is QuizDetailedScoreboard {
     return TypeGuardsUtils.doesObjectContainsFields(object, this.OBJECT_FIELDS)
@@ -103,7 +103,7 @@ export class QuizDetailedScoreboardGuard {
 
 export class QuizScoreGuard {
 
-  private static OBJECT_FIELDS: string[] = ["score"];
+  private static OBJECT_FIELDS: string[] = ['score'];
 
   public static check(object: any): object is QuizScore {
     return TypeGuardsUtils.doesObjectContainsFields(object, this.OBJECT_FIELDS)
@@ -115,7 +115,7 @@ export class QuizScoreGuard {
 
 export class QuestionStatisticsGuard {
 
-  private static OBJECT_FIELDS: string[] = ["isAnswerCorrectFlag", "timePenalty", "timeSpendInSeconds"];
+  private static OBJECT_FIELDS: string[] = ['isAnswerCorrectFlag', 'timePenalty', 'timeSpendInSeconds'];
 
   public static check(object: any): object is QuestionStatistics {
     return TypeGuardsUtils.doesObjectContainsFields(object, this.OBJECT_FIELDS)

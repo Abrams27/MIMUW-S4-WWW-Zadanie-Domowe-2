@@ -1,5 +1,5 @@
 import {NextFunction, Request, Response} from 'express';
-import {userService} from '@shared/userService';
+import {userService} from '../main/services/userService';
 import {UNAUTHORIZED} from 'http-status-codes';
 
 export const isUserLoggedMiddleware = async (req: Request, res: Response, next: NextFunction) => {

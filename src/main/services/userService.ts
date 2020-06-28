@@ -1,8 +1,8 @@
 import {Request} from 'express';
-import {databaseService, UserDB} from '@shared/databaseService';
-import {comparePasswordWithHash, hashPassword} from '@shared/hashUtils';
+import {databaseService, UserDB} from './databaseService';
+import {comparePasswordWithHash, hashPassword} from '../utils/hashUtils';
 
-class UserService {
+export class UserService {
 
   public async loginUser(req: Request, username: string, password: string): Promise<boolean> {
     const user: UserDB = await databaseService.getUserWithName(username);
@@ -86,6 +86,5 @@ class UserService {
     return userPasswordLatestPasswordGeneration === passwordGeneration;
   }
 }
-
 
 export const userService: UserService = new UserService();

@@ -5,10 +5,9 @@ import {OK, UNAUTHORIZED} from 'http-status-codes';
 import {csrfProtectionMiddleware} from '../middlewares/csrfMiddleware';
 import {isUserLoggedMiddleware} from '../middlewares/userMiddleware';
 
-import {userService} from '@shared/userService';
+import {userService} from '../main/services/userService';
 
 const router = Router();
-
 
 router.post('/login', csrfProtectionMiddleware, async (req: Request, res: Response) => {
   const username = req.body.username;

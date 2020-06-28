@@ -17,7 +17,7 @@ export class Utils {
   }
 
   public static getStringDescriptingTimeInSeconds(seconds: number): string {
-    if (seconds == 1) {
+    if (seconds === 1) {
       return this.getStringDescriptingTimeInSecondsFor1Second();
     } else if (seconds > 1 && seconds < 5) {
       return this.getStringDescriptingTimeInSecondsForGreaterThan1AndLessThan5Seconds(seconds);
@@ -27,15 +27,15 @@ export class Utils {
   }
 
   private static getStringDescriptingTimeInSecondsFor1Second(): string {
-    return "1 sekunda";
+    return '1 sekunda';
   }
 
   private static getStringDescriptingTimeInSecondsForGreaterThan1AndLessThan5Seconds(seconds: number): string {
-    return `${seconds} sekundy`;
+    return `${seconds.toFixed(1)} sekundy`;
   }
 
   private static getStringDescriptingTimeInSecondsFor0AndGreaterThan4Seconds(seconds: number): string {
-    return `${seconds} sekund`;
+    return `${seconds.toFixed(1)} sekund`;
   }
 
 }

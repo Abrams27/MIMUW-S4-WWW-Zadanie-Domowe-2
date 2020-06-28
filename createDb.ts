@@ -1,7 +1,5 @@
 import sqlite3 from 'sqlite3'
-import {hashPassword} from './src/shared/hashUtils';
-import {QuizAverageTimeScoreboard} from './src/shared/scoreboard';
-import {databaseService} from './src/shared/databaseService';
+import {hashPassword} from './src/main/utils/hashUtils';
 
 const db = new sqlite3.Database('persistence/main.db');
 

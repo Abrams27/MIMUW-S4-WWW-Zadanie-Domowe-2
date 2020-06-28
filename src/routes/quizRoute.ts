@@ -2,9 +2,9 @@ import {Request, Response, Router} from 'express';
 import 'express-session';
 import {INTERNAL_SERVER_ERROR, OK, UNAUTHORIZED} from 'http-status-codes';
 import {csrfProtectionMiddleware} from '../middlewares/csrfMiddleware';
-import {QuizDetailedScoreboard} from '@shared/scoreboard';
-import {QuizShortDB, QuizWithJsonDB, ScoreDB} from '@shared/databaseService';
-import {quizService} from '@shared/quizService';
+import {QuizDetailedScoreboard} from 'src/main/quiz/scoreboard';
+import {QuizShortDB, QuizWithJsonDB, ScoreDB} from 'src/main/services/databaseService';
+import {quizService} from '../main/services/quizService';
 import {isUserLoggedMiddleware} from '../middlewares/userMiddleware';
 
 const router = Router();

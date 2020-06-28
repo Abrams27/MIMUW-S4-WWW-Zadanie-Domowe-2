@@ -1,6 +1,5 @@
-import {asyncDbAll, asyncDbGet, asyncDbRun} from '@shared/databaseUtils';
+import {asyncDbAll, asyncDbGet, asyncDbRun} from '../utils/databaseUtils';
 import sqlite3 from 'sqlite3';
-import {error} from 'winston';
 
 export interface UserDB {
   id: number,
@@ -42,7 +41,7 @@ export interface AverageTimeStatsDB {
 }
 
 
-class DatabaseService {
+export class DatabaseService {
 
   private database = new sqlite3.Database('persistence/main.db');
 

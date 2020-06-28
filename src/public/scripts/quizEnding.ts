@@ -15,9 +15,6 @@ const scoreboardTableEditor: ScoreboardTableEditor =
 
 const nullableQuizName: string | null = sessionStorage.getItem(Properties.QUIZ_NAME_SESSION_STORAGE_KEY);
 const quizName: string = Utils.getStringOrThrowError(nullableQuizName, 'invalid session storage key');
-// const nullableDetailedScoreboardJson: string | null = sessionStorage.getItem(Properties.QUIZ_DETAILED_SCOREBOARD_SESSION_STORAGE_KEY);
-// const detailedScoreboardJson: string = Utils.getStringOrThrowError(nullableDetailedScoreboardJson, 'invalid session storage key');
-// const detailedScoreboard: QuizDetailedScoreboard = QuizDetailedScoreboard.fromJson(detailedScoreboardJson);
 
 httpClient.getQuizStatistics(quizName)
 .then(o => {
@@ -25,13 +22,6 @@ httpClient.getQuizStatistics(quizName)
   const quizEndingPageUpdater: QuizEndingPageEditor = new QuizEndingPageEditor(document, detailedScoreboard);
   quizEndingPageUpdater.loadPage();
 });
-// const quizEndingPageUpdater: QuizEndingPageEditor = new QuizEndingPageEditor(document, detailedScoreboard);
-// quizEndingPageUpdater.loadPage();
-
-// IndexedDBClient.saveScore(detailedScoreboard.getQuizScore());
-
-// httpClient.getTopScores()
-// .then(result => mapScoresAndAddRows(result));
 
 httpClient.getQuizTopScores(quizName)
   .then( o => mapScoresAndAddRows(o));

@@ -1,7 +1,6 @@
 import {Utils} from '../utils/utils.js';
 import {DocumentEditor} from './documentEditors.js';
 import {QuizScore} from '../scoreboards/scoreboard.js';
-import {QuizProperties} from '../properties/quizProperties.js';
 
 export class ScoreboardTableEditor {
 

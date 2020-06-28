@@ -35,10 +35,6 @@ export class QuizDetailedScoreboard {
     return this.quizScore.getScore();
   }
 
-  public getQuizScore(): QuizScore {
-    return this.quizScore;
-  }
-
   public getQuestionsStatistics(): QuestionStatistics[] {
     return this.questionsStatistics;
   }
@@ -52,11 +48,6 @@ export class QuizDetailedScoreboard {
 
   public getNumberOfAnswers(): number {
     return this.questionsStatistics.length;
-  }
-
-  private static mapQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime[]): QuestionStatistics[] {
-    return QuizQuestionWithAnswersAndTimeMapper
-      .mapToQuestionStatisticsArray(questionsListWithUserAnswers);
   }
 
   private calculateResultWithPenalties(): number {
@@ -210,25 +201,6 @@ export class QuizScore {
     } else {
       return 0;
     }
-  }
-
-}
-
-
-class QuizQuestionWithAnswersAndTimeMapper {
-
-  public static mapToQuestionStatisticsArray(quizQuestionWithAnswersAndTimeArray: QuizQuestionWithAnswersAndTime[]): QuestionStatistics[] {
-    return quizQuestionWithAnswersAndTimeArray
-        .map(quizQuestionWithAnswersAndTime => this.mapToQuestionStatistics(quizQuestionWithAnswersAndTime));
-  }
-
-  private static mapToQuestionStatistics(quizQuestionWithAnswersAndTime: QuizQuestionWithAnswersAndTime): QuestionStatistics {
-    const isAnswerCorrect: boolean = quizQuestionWithAnswersAndTime.isUserAnswerCorrect();
-    const wrongAnswerPenalty: number = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
-    const answerTimeInSeconds: number = quizQuestionWithAnswersAndTime.getUserAnswerTime();
-    // const correctAnswr: number = quizQuestionWithAnswersAndTime.
-
-    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, 2137, 1822);
   }
 
 }

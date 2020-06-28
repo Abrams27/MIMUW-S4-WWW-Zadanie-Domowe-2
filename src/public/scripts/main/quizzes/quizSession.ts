@@ -1,5 +1,5 @@
-import {Quiz, QuizQuestionWithAnswersAndTime} from "./quizzes.js";
-import {QuizDetailedScoreboard, QuizPercentageTimeDetailedScoreboard} from '../scoreboards/scoreboard.js';
+import {Quiz, QuizQuestionWithAnswersAndTime} from './quizzes.js';
+import {QuizPercentageTimeDetailedScoreboard} from '../scoreboards/scoreboard.js';
 
 
 export class QuizSession {

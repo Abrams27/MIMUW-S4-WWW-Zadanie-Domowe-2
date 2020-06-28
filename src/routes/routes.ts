@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import UserRouter from './UserRoute';
-import QuizRouter from './QuizRoute'
+import UserRouter from './userRoute';
+import QuizRouter from './quizRoute'
 
 const router = Router();
 

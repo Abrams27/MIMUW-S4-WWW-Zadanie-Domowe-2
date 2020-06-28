@@ -1,19 +1,20 @@
 import {
-  AverageTimeStatsDB,
-  databaseService,
+  AverageTimeStatsDB, DatabaseService,
   QuizIdDB,
   QuizScoreShortDB,
   QuizShortDB,
   QuizWithJsonDB,
   ScoreDB,
   ScoreStatsDB
-} from '@shared/databaseService';
+} from './databaseService';
 import {
   QuizAverageTimeScoreboard,
   QuizDetailedScoreboard,
   QuizPercentageTimeDetailedScoreboard
-} from '@shared/scoreboard';
-import {Quiz} from '@shared/quizzes';
+} from '../quiz/scoreboard';
+import {Quiz} from '../quiz/quizzes';
+
+const databaseService: DatabaseService = new DatabaseService();
 
 class QuizService {
 

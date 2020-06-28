@@ -1,4 +1,4 @@
-import {Quiz, QuizQuestionWithAnswerJson, QuizQuestionWithAnswersAndTime} from '@shared/quizzes';
+import {Quiz, QuizQuestionWithAnswerJson} from 'src/main/quiz/quizzes';
 
 export class QuizDetailedScoreboard {
 
@@ -68,32 +68,12 @@ export class QuizDetailedScoreboard {
     return JSON.stringify(this);
   }
 
-  public getNumericQuizScore(): number {
-    return this.quizScore.getScore();
-  }
-
   public getQuizScore(): QuizScore {
     return this.quizScore;
   }
 
   public getQuestionsStatistics(): QuestionStatistics[] {
     return this.questionsStatistics;
-  }
-
-  public getNumberOfCorrectsAnswers(): number {
-    return this.questionsStatistics
-    .map(questionStatistics => questionStatistics.isAnswerCorrect())
-    .map(isAnswerCorrect => Number(isAnswerCorrect))
-    .reduce((sum, isCorrect) => sum + isCorrect);
-  }
-
-  public getNumberOfAnswers(): number {
-    return this.questionsStatistics.length;
-  }
-
-  private static mapQuizQuestionWithAnswersAndTime(questionsListWithUserAnswers: QuizQuestionWithAnswersAndTime[]): QuestionStatistics[] {
-    return QuizQuestionWithAnswersAndTimeMapper
-    .mapToQuestionStatisticsArray(questionsListWithUserAnswers);
   }
 
   private calculateResultWithPenalties(): number {
@@ -181,8 +161,6 @@ export class QuizScore {
 }
 
 
-
-
 export class QuizPercentageTimeDetailedScoreboard {
 
   private readonly quizName: string;
@@ -242,30 +220,9 @@ export class QuestionPercentageTimeStatistics {
 
 }
 
-
-
-class QuizQuestionWithAnswersAndTimeMapper {
-
-  public static mapToQuestionStatisticsArray(quizQuestionWithAnswersAndTimeArray: QuizQuestionWithAnswersAndTime[]): QuestionStatistics[] {
-    return quizQuestionWithAnswersAndTimeArray
-    .map(quizQuestionWithAnswersAndTime => this.mapToQuestionStatistics(quizQuestionWithAnswersAndTime));
-  }
-
-  private static mapToQuestionStatistics(quizQuestionWithAnswersAndTime: QuizQuestionWithAnswersAndTime): QuestionStatistics {
-    const isAnswerCorrect: boolean = quizQuestionWithAnswersAndTime.isUserAnswerCorrect();
-    const wrongAnswerPenalty: number = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
-    const answerTimeInSeconds: number = quizQuestionWithAnswersAndTime.getUserAnswerTime();
-    const correctAnswer: number = quizQuestionWithAnswersAndTime.getCorrectAnswer();
-
-    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, correctAnswer, 0);
-  }
-
-}
-
-
 export class QuizAverageTimeScoreboard {
 
-  private questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[];
+  private readonly questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[];
 
   private constructor(questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[]) {
     this.questionsAverageTimeScoreboard = questionsAverageTimeScoreboard;

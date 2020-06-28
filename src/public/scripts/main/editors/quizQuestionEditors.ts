@@ -1,7 +1,7 @@
-import {HTMLElementEditor} from "./documentEditors.js";
-import {QuizSession} from "../quizzes/quizSession.js";
-import {QuizQuestionProperties} from "../properties/quizQuestionProperties.js";
-import {Utils} from "../utils/utils.js";
+import {HTMLElementEditor} from './documentEditors.js';
+import {QuizSession} from '../quizzes/quizSession.js';
+import {QuizQuestionProperties} from '../properties/quizQuestionProperties.js';
+import {Utils} from '../utils/utils.js';
 
 export class CurrentQuizSessionPageEditor {
 
