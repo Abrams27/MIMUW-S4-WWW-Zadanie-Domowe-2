@@ -60,12 +60,8 @@ db.serialize(async () => {
 
   db.run('CREATE TABLE quizzes (id INTEGER PRIMARY KEY, name TEXT, quiz TEXT)');
   db.run('INSERT INTO quizzes VALUES (1, ?, ?)', ['alkoholowo matematyczny quiz', exampleQuiz]);
-  db.run('INSERT INTO quizzes VALUES (2, ?, ?)', ['alkoholowo matematyczny quiz XDDDDDDD', exampleQuiz]);
 
-  db.run('CREATE TABLE scores (id INTEGER PRIMARY KEY, quiz_id INTEGER REFERENCES quizzes(id), score INTEGER, user_id INTEGER REFERENCES users(id), stats TEXT)');
-  db.run('INSERT INTO scores VALUES (1, ?, ?, ?, ?)', [2, 21372137, 2, '']);
-  db.run('INSERT INTO scores VALUES (2, ?, ?, ?, ?)', [1, 1822, 2, '']);
-  db.run('INSERT INTO scores VALUES (3, ?, ?, ?, ?)', [2, 6969, 1, '{"questionsStatistics":[{"isAnswerCorrectFlag":false,"timePenalty":1822,"timeSpendInSeconds":1078.5000000000002,"correctAnswer":79},{"isAnswerCorrectFlag":false,"timePenalty":1822,"timeSpendInSeconds":2157.0000000000005,"correctAnswer":11712},{"isAnswerCorrectFlag":false,"timePenalty":1822,"timeSpendInSeconds":1078.5000000000002,"correctAnswer":324},{"isAnswerCorrectFlag":true,"timePenalty":1822,"timeSpendInSeconds":2157.0000000000005,"correctAnswer":42}],"quizScore":{"score":11937}}']);
+  db.run('CREATE TABLE scores (id INTEGER PRIMARY KEY AUTOINCREMENT, quiz_id INTEGER REFERENCES quizzes(id), score INTEGER, user_id INTEGER REFERENCES users(id), stats TEXT)');
 
   db.run('CREATE TABLE average_time (id INTEGER PRIMARY KEY, quiz_id INTEGER REFERENCES quizzes(id), stats TEXT)');
   db.run('INSERT INTO average_time VALUES (?, ?, ?)', [1, 1, emptyAverageTimeStats]);

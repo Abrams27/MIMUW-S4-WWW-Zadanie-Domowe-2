@@ -5,14 +5,17 @@
     "build-public": "tsc -p tsconfig.public.json && cp -r src/public/html dist/src/public/html && cp -r src/public/stylesheets dist/src/public/stylesheets",
     "build": "tsc -p tsconfig.json && npm run build-public",
     "start": "node dist/src/app.js",
-    "createdb": "mkdir persistence && npx ts-node createDb.ts"
+    "createdb": "mkdir persistence && npx ts-node createDb.ts",
+    "test": "./runTests.sh"
   },
   "dependencies": {
     "@types/bcrypt": "^3.0.0",
     "@types/csurf": "^1.9.36",
     "@types/express-session": "^1.17.0",
+    "@types/selenium-webdriver": "^3.0.17",
     "@types/sqlite3": "^3.1.6",
     "bcrypt": "^5.0.0",
+    "chai": "^4.2.0",
     "command-line-args": "^5.1.1",
     "connect-sqlite3": "^0.9.11",
     "cookie-parser": "^1.4.5",
@@ -23,11 +26,13 @@
     "express-session": "^1.17.1",
     "helmet": "^3.23.0",
     "http-status-codes": "^1.4.0",
+    "main": "latest",
+    "mocha-webdriver": "^0.2.8",
     "module-alias": "^2.2.2",
     "morgan": "^1.10.0",
+    "selenium-webdriver": "^3.6.0",
     "sqlite3": "^4.2.0",
-    "winston": "^3.2.1",
-    "main": "latest"
+    "winston": "^3.2.1"
   },
   "devDependencies": {
     "@types/command-line-args": "^5.0.0",

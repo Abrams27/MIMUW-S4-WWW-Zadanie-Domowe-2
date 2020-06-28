@@ -11,7 +11,6 @@ const SQLiteStore = require('connect-sqlite3')(session);
 import routes from './routes/routes';
 import {csrfCookieSetter, csrfProtectionMiddleware} from './middlewares/csrfMiddleware';
 import {isUserLoggedMiddleware} from './middlewares/userMiddleware';
-import morgan = require('morgan');
 
 const app = express();
 
@@ -23,8 +22,6 @@ app.use(session({
     secret: 'pozdrawiamPanaCiebiere42',
     cookie: { maxAge: 10 * 60 * 1000},
 }));
-
-app.use(morgan('dev'));
 
 app.use('/api', routes);
 

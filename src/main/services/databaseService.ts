@@ -78,7 +78,7 @@ export class DatabaseService {
   }
 
   public async saveQuizScore(quizId: number, userId: number, quizScore: number, quizStats: string): Promise<void> {
-    return asyncDbRun(this.database, 'INSERT INTO scores VALUES (4, ?, ?, ?, ?)', [quizId, quizScore, userId, quizStats])
+    return asyncDbRun(this.database, 'INSERT INTO scores (quiz_id, score, user_id, stats) VALUES (?, ?, ?, ?)', [quizId, quizScore, userId, quizStats])
   }
 
   public async getUserQuizScore(quizId: number, userId: number): Promise<ScoreStatsDB> {
