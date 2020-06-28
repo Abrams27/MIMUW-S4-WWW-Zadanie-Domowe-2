@@ -7,8 +7,8 @@ export class Quizzes {
         this.chosenQuiz = this.quizzes[0];
     }
     validateQuizzesArrayLength() {
-        if (this.quizzes.length == 0) {
-            throw new Error("no quizzes added");
+        if (this.quizzes.length === 0) {
+            throw new Error('no quizzes added');
         }
     }
     getQuizzesNames() {
@@ -24,8 +24,8 @@ export class Quizzes {
     findQuiz(quizName) {
         const quiz = this.quizzes
             .find(quiz => quiz.hasName(quizName));
-        if (quiz == undefined) {
-            throw new Error("invalid quiz name");
+        if (quiz === undefined) {
+            throw new Error('invalid quiz name');
         }
         return quiz;
     }
@@ -44,7 +44,7 @@ export class Quiz {
             return new Quiz(parsedQuizJson);
         }
         else {
-            throw new Error("invalid quiz json format");
+            throw new Error('invalid quiz json format');
         }
     }
     toJson() {

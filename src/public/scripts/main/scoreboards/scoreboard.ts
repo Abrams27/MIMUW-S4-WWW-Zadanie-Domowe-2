@@ -73,18 +73,24 @@ export class QuestionStatistics {
   private readonly isAnswerCorrectFlag: boolean;
   private readonly timePenalty: number;
   private readonly timeSpendInSeconds: number;
+  private readonly correctAnswer: number;
+  private readonly averageCorrectAnswerTime: number;
 
-  public constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendInSeconds: number) {
+  public constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendInSeconds: number, correctAnswer: number, averageCorrectAnswerTime: number) {
     this.isAnswerCorrectFlag = isAnswerCorrect;
     this.timePenalty = timePenalty;
     this.timeSpendInSeconds = timeSpendInSeconds;
+    this.correctAnswer = correctAnswer;
+    this.averageCorrectAnswerTime = averageCorrectAnswerTime;
   }
 
   public static copyOf(questionStatistics: QuestionStatistics): QuestionStatistics {
     return new QuestionStatistics(
         questionStatistics.isAnswerCorrectFlag,
         questionStatistics.timePenalty,
-        questionStatistics.timeSpendInSeconds);
+        questionStatistics.timeSpendInSeconds,
+        questionStatistics.correctAnswer,
+        questionStatistics.averageCorrectAnswerTime);
   }
 
   public isAnswerCorrect(): boolean {
@@ -105,6 +111,14 @@ export class QuestionStatistics {
     } else {
       return this.timeSpendInSeconds + this.timePenalty;
     }
+  }
+
+  public getCorrectAnswer(): number {
+    return this.correctAnswer;
+  }
+
+  public getAverageAnswerTime(): number {
+    return this.averageCorrectAnswerTime;
   }
 
 }
@@ -212,8 +226,9 @@ class QuizQuestionWithAnswersAndTimeMapper {
     const isAnswerCorrect: boolean = quizQuestionWithAnswersAndTime.isUserAnswerCorrect();
     const wrongAnswerPenalty: number = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
     const answerTimeInSeconds: number = quizQuestionWithAnswersAndTime.getUserAnswerTime();
+    // const correctAnswr: number = quizQuestionWithAnswersAndTime.
 
-    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds);
+    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, 2137, 1822);
   }
 
 }

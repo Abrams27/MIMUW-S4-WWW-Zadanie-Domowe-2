@@ -6,7 +6,6 @@ import {DocumentEditor} from './main/editors/documentEditors.js';
 import {HttpClient} from './main/httpclient/httpClient.js';
 import {ScoreboardTableEditor} from './main/editors/quizEditors.js';
 import {Utils} from './main/utils/utils.js';
-import {QuizQuestionProperties} from './main/properties/quizQuestionProperties';
 
 const documentEditor: DocumentEditor = DocumentEditor.fromDocument(document);
 const httpClient: HttpClient = new HttpClient();
@@ -51,7 +50,6 @@ const quizLogoutButton: HTMLButtonElement = documentEditor.getElement(QuizEnding
 quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
 
 function returnButtonClickListener() {
-  // todo pewnie cos zrobic
   location.href = Properties.QUIZ_HTML_FILE;
 }
 

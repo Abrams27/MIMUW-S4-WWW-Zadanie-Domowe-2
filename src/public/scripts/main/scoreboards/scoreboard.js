@@ -50,13 +50,15 @@ export class QuizDetailedScoreboard {
     }
 }
 export class QuestionStatistics {
-    constructor(isAnswerCorrect, timePenalty, timeSpendInSeconds) {
+    constructor(isAnswerCorrect, timePenalty, timeSpendInSeconds, correctAnswer, averageCorrectAnswerTime) {
         this.isAnswerCorrectFlag = isAnswerCorrect;
         this.timePenalty = timePenalty;
         this.timeSpendInSeconds = timeSpendInSeconds;
+        this.correctAnswer = correctAnswer;
+        this.averageCorrectAnswerTime = averageCorrectAnswerTime;
     }
     static copyOf(questionStatistics) {
-        return new QuestionStatistics(questionStatistics.isAnswerCorrectFlag, questionStatistics.timePenalty, questionStatistics.timeSpendInSeconds);
+        return new QuestionStatistics(questionStatistics.isAnswerCorrectFlag, questionStatistics.timePenalty, questionStatistics.timeSpendInSeconds, questionStatistics.correctAnswer, questionStatistics.averageCorrectAnswerTime);
     }
     isAnswerCorrect() {
         return this.isAnswerCorrectFlag;
@@ -74,6 +76,12 @@ export class QuestionStatistics {
         else {
             return this.timeSpendInSeconds + this.timePenalty;
         }
+    }
+    getCorrectAnswer() {
+        return this.correctAnswer;
+    }
+    getAverageAnswerTime() {
+        return this.averageCorrectAnswerTime;
     }
 }
 export class QuizPercentageTimeDetailedScoreboard {
@@ -145,6 +153,7 @@ class QuizQuestionWithAnswersAndTimeMapper {
         const isAnswerCorrect = quizQuestionWithAnswersAndTime.isUserAnswerCorrect();
         const wrongAnswerPenalty = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
         const answerTimeInSeconds = quizQuestionWithAnswersAndTime.getUserAnswerTime();
-        return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds);
+        // const correctAnswr: number = quizQuestionWithAnswersAndTime.
+        return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, 2137, 1822);
     }
 }

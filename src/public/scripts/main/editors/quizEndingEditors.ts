@@ -50,9 +50,11 @@ export class QuizEndingPageEditor {
     const isAnswerCorrect: boolean = questionStatistics.isAnswerCorrect();
     const answerTime: number = questionStatistics.getAnswerTime();
     const timePenalty: number = questionStatistics.getTimePenalty();
+    const correctAnswer: number = questionStatistics.getCorrectAnswer();
+    const averageAnswerTime: number = questionStatistics.getAverageAnswerTime();
 
     this.quizDetailsStatsTableEditor
-      .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, 1, answerTime, timePenalty, 2);
+      .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, correctAnswer, answerTime, timePenalty, averageAnswerTime);
   }
 
 }

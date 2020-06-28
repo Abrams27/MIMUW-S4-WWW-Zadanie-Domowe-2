@@ -37,7 +37,6 @@ returnButton.addEventListener(Properties.CLICK_EVENT_TYPE, returnButtonClickList
 const quizLogoutButton = documentEditor.getElement(QuizEndingProperties.QUIZ_ENDING_LOGOUT_BUTTON_ID);
 quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
 function returnButtonClickListener() {
-    // todo pewnie cos zrobic
     location.href = Properties.QUIZ_HTML_FILE;
 }
 function quizLogoutButtonClickListener() {

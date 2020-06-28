@@ -39,13 +39,22 @@ export class QuizDetailedScoreboard {
         quiz.getQuestionsWithAnswers();
 
     return Array.from(Array(questionPercentageTimeStatistics.length).keys())
-      .map( o => new QuestionStatistics(
-          this.isAnswerCorrect(questionPercentageTimeStatistics[o].getAnswer(), questionsWithAnswers[o].answer),
-          questionsWithAnswers[o].wrongAnswerPenalty,
-          this.getAnswerTime(questionPercentageTimeStatistics[o].getTimeSpendPercentage(), answersTime),
-          questionsWithAnswers[o].answer));
-
+    .map(o => new QuestionStatistics(
+        this.isAnswerCorrect(questionPercentageTimeStatistics[o].getAnswer(), questionsWithAnswers[o].answer),
+        questionsWithAnswers[o].wrongAnswerPenalty,
+        this.getAnswerTime(questionPercentageTimeStatistics[o].getTimeSpendPercentage(), answersTime),
+        questionsWithAnswers[o].answer,
+        0));
   }
+
+  public upadateAverageTime(quizAverageTimeScoreboard: QuizAverageTimeScoreboard) {
+    const questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[] = quizAverageTimeScoreboard.getQuestionsAverageTimeScoreboard();
+
+    for (let i = 0; i < this.questionsStatistics.length; i++) {
+      this.questionsStatistics[i].setAverageCorrectAnswerTime(questionsAverageTimeScoreboard[i].getAverageTime());
+    }
+  }
+
 
   private static isAnswerCorrect(answer: number, correctAnswer: number): boolean {
     return answer === correctAnswer;
@@ -92,7 +101,6 @@ export class QuizDetailedScoreboard {
     .map(questionStatistics => questionStatistics.getTimeWithPenalty())
     .reduce((sum, score) => sum + score);
   }
-
 }
 
 
@@ -102,12 +110,14 @@ export class QuestionStatistics {
   private readonly timePenalty: number;
   private readonly timeSpendInSeconds: number;
   private readonly correctAnswer: number;
+  private averageCorrectAnswerTime: number;
 
-  public constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendInSeconds: number, correctAnswer: number) {
+  public constructor(isAnswerCorrect: boolean, timePenalty: number, timeSpendInSeconds: number, correctAnswer: number, averageCorrectAnswerTime: number) {
     this.isAnswerCorrectFlag = isAnswerCorrect;
     this.timePenalty = timePenalty;
     this.timeSpendInSeconds = timeSpendInSeconds;
     this.correctAnswer = correctAnswer;
+    this.averageCorrectAnswerTime = averageCorrectAnswerTime;
   }
 
   public static copyOf(questionStatistics: QuestionStatistics): QuestionStatistics {
@@ -115,7 +125,8 @@ export class QuestionStatistics {
         questionStatistics.isAnswerCorrectFlag,
         questionStatistics.timePenalty,
         questionStatistics.timeSpendInSeconds,
-        questionStatistics.correctAnswer);
+        questionStatistics.correctAnswer,
+        questionStatistics.averageCorrectAnswerTime);
   }
 
   public isAnswerCorrect(): boolean {
@@ -132,6 +143,10 @@ export class QuestionStatistics {
 
   public getTimeSpendInSeconds(): number {
     return this.timeSpendInSeconds;
+  }
+
+  public setAverageCorrectAnswerTime(averageCorrectAnswerTime: number) {
+    this.averageCorrectAnswerTime = averageCorrectAnswerTime;
   }
 
 }
@@ -240,8 +255,9 @@ class QuizQuestionWithAnswersAndTimeMapper {
     const isAnswerCorrect: boolean = quizQuestionWithAnswersAndTime.isUserAnswerCorrect();
     const wrongAnswerPenalty: number = quizQuestionWithAnswersAndTime.getWrongAnswerPenalty();
     const answerTimeInSeconds: number = quizQuestionWithAnswersAndTime.getUserAnswerTime();
+    const correctAnswer: number = quizQuestionWithAnswersAndTime.getCorrectAnswer();
 
-    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, 1);
+    return new QuestionStatistics(isAnswerCorrect, wrongAnswerPenalty, answerTimeInSeconds, correctAnswer, 0);
   }
 
 }
@@ -273,22 +289,6 @@ export class QuizAverageTimeScoreboard {
       .map(questionAverageTimeScoreboard => QuestionAverageTimeScoreboard.copyOf(questionAverageTimeScoreboard));
   }
 
-  public static createEmpty(numberOfQuestions: number): QuizAverageTimeScoreboard {
-    const questionsAverageTimeScoreboard = this.getEmptyQuizAverageTimeScoreboards(numberOfQuestions);
-
-    return new QuizAverageTimeScoreboard(questionsAverageTimeScoreboard);
-  }
-
-  private static getEmptyQuizAverageTimeScoreboards(numberOfQuestions: number) {
-    const questionsAverageTimeScoreboard: QuestionAverageTimeScoreboard[] = [];
-
-    for (let i = 0; i < numberOfQuestions; i++) {
-      questionsAverageTimeScoreboard.push(new QuestionAverageTimeScoreboard(0, 0));
-    }
-
-    return questionsAverageTimeScoreboard;
-  }
-
   public updateWithQuizScoreboard(quizDetailedScoreboard: QuizDetailedScoreboard) {
     const questionsStatistics: QuestionStatistics[] = quizDetailedScoreboard.getQuestionsStatistics();
     for (let i = 0; i < questionsStatistics.length; i++) {
@@ -300,6 +300,10 @@ export class QuizAverageTimeScoreboard {
 
   public toJson(): string {
     return JSON.stringify(this);
+  }
+
+  public getQuestionsAverageTimeScoreboard(): QuestionAverageTimeScoreboard[] {
+    return this.questionsAverageTimeScoreboard;
   }
 
 }
@@ -322,5 +326,13 @@ class QuestionAverageTimeScoreboard {
   public updateQuestionTime(answerTime: number) {
     this.answersTime += answerTime;
     this.numberOfAnswers += 1;
+  }
+
+  public getAverageTime(): number {
+    if (this.numberOfAnswers) {
+      return this.answersTime / this.numberOfAnswers;
+    }
+
+    return 0;
   }
 }

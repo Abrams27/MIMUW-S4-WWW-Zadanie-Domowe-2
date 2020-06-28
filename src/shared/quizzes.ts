@@ -79,6 +79,10 @@ export class QuizQuestionWithAnswersAndTime {
     this.answerTime = answerTime;
   }
 
+  public getCorrectAnswer(): number {
+    return this.quizQuestionWithAnswerJson.answer;
+  }
+
   public getUserAnswerTime(): number {
     return this.answerTime;
   }

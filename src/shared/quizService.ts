@@ -66,10 +66,10 @@ class QuizService {
         QuizDetailedScoreboard.fromQuizAndQuizPercentageTimeDetailedScoreboard(quiz, quizPercentageTimeDetailedScoreboard, answerTime);
 
     const averageTimeStatsDB: AverageTimeStatsDB = await databaseService.getAverageTimeStats(quizId.id);
-    const questionAverageTimeScoreboard: QuizAverageTimeScoreboard = QuizAverageTimeScoreboard.fromJson(averageTimeStatsDB.stats);
-    questionAverageTimeScoreboard.updateWithQuizScoreboard(quizDetailedScoreboard);
+    const quizAverageTimeScoreboard: QuizAverageTimeScoreboard = QuizAverageTimeScoreboard.fromJson(averageTimeStatsDB.stats);
+    quizAverageTimeScoreboard.updateWithQuizScoreboard(quizDetailedScoreboard);
 
-    await databaseService.saveAverageTimeStats(quizId.id, questionAverageTimeScoreboard.toJson());
+    await databaseService.saveAverageTimeStats(quizId.id, quizAverageTimeScoreboard.toJson());
     await databaseService.saveQuizScore(quizId.id, userId, quizDetailedScoreboard.getQuizScore().getScore(), quizDetailedScoreboard.toJson());
 
     // TODO
@@ -80,8 +80,13 @@ class QuizService {
   public async getQuizResult(userId: number, quizName: string): Promise<QuizDetailedScoreboard> {
     const quizId: QuizIdDB = await databaseService.getQuizIdWithName(quizName);
     const userQuizScoreJson: ScoreStatsDB = await databaseService.getUserQuizScore(quizId.id, userId);
+    const quizAverageTimeScoreboardJson: AverageTimeStatsDB = await databaseService.getAverageTimeStats(quizId.id);
+    const quizAverageTimeScoreboard: QuizAverageTimeScoreboard = QuizAverageTimeScoreboard.fromJson(quizAverageTimeScoreboardJson.stats);
 
-    return QuizDetailedScoreboard.fromJson(userQuizScoreJson.stats);
+    const quizDetailedScoreboard: QuizDetailedScoreboard = QuizDetailedScoreboard.fromJson(userQuizScoreJson.stats);
+    quizDetailedScoreboard.upadateAverageTime(quizAverageTimeScoreboard);
+
+    return quizDetailedScoreboard;
   }
 
 }

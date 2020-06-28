@@ -33,7 +33,9 @@ export class QuizEndingPageEditor {
         const isAnswerCorrect = questionStatistics.isAnswerCorrect();
         const answerTime = questionStatistics.getAnswerTime();
         const timePenalty = questionStatistics.getTimePenalty();
+        const correctAnswer = questionStatistics.getCorrectAnswer();
+        const averageAnswerTime = questionStatistics.getAverageAnswerTime();
         this.quizDetailsStatsTableEditor
-            .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, 1, answerTime, timePenalty, 2);
+            .addRowWithAnswerTimeAndPenaltyForQuestion(isAnswerCorrect, correctAnswer, answerTime, timePenalty, averageAnswerTime);
     }
 }
