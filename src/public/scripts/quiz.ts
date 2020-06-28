@@ -77,6 +77,9 @@ quizStatsButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizStatsButtonCli
 const quizLogoutButton: HTMLButtonElement = documentEditor.getElement(QuizProperties.QUIZ_LOGOUT_BUTTON_ID) as HTMLButtonElement;
 quizLogoutButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizLogoutButtonClickListener);
 
+const quizPasswordChangeButton: HTMLButtonElement = documentEditor.getElement(QuizProperties.QUIZ_PASSWORD_CHANGE_BUTTON_ID) as HTMLButtonElement;
+quizPasswordChangeButton.addEventListener(Properties.CLICK_EVENT_TYPE, quizPasswordChangeButtonClickListener);
+
 function quizStatsSelectionFormInputListener(event: any) {
   chosenQuizStatsQuizName = event.target.value;
 }
@@ -88,4 +91,8 @@ function quizStatsButtonClickListener() {
 
 function quizLogoutButtonClickListener() {
   location.href = Properties.QUIZ_LOGOUT_HTML_FILE;
+}
+
+function quizPasswordChangeButtonClickListener() {
+  location.href = Properties.QUIZ_PASSWORD_CHANGE_HTML_FILE;
 }

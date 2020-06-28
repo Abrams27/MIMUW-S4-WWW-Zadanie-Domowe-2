@@ -1,6 +1,6 @@
 import {DocumentEditor} from './main/editors/documentEditors.js';
 import {Properties} from './main/properties/Properties.js';
-import {PasswordChangeProperties} from './main/properties/passwordChangeProperties';
+import {PasswordChangeProperties} from './main/properties/passwordChangeProperties.js';
 
 const documentEditor: DocumentEditor = DocumentEditor.fromDocument(document);
 const crsfInput: HTMLInputElement = documentEditor.getElement(Properties.CRSF_INPUT_ID) as HTMLInputElement;

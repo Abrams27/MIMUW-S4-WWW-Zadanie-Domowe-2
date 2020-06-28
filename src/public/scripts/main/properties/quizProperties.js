@@ -9,6 +9,7 @@ let QuizProperties = /** @class */ (() => {
     QuizProperties.QUIZ_STATS_BUTTON_ID = 'stats-quiz-button';
     QuizProperties.QUIZ_STATS_SELECTION_FORM_ID = 'quiz-stats-selection-form';
     QuizProperties.QUIZ_LOGOUT_BUTTON_ID = 'quiz-header-logout-button';
+    QuizProperties.QUIZ_PASSWORD_CHANGE_BUTTON_ID = 'quiz-header-password-change-button';
     QuizProperties.QUIZ_SCOREBOARD_NUMBER_OF_SCOREBOARD_ROWS = 5;
     QuizProperties.QUIZ_SCOREBOARD_TABLE_ID = 'quizzes-scoreboard-table';
     QuizProperties.QUIZ_SCOREBOARD_TABLE_ELEMENT_CLASS = 'quizzes-scoreboard-table-element';
